@@ -32,3 +32,14 @@
   - Data: Setyo, Etta
 - `EPD_TEAM.md` is the working source of truth for the roster and future Slack member IDs.
 - Slack member IDs should be tracked for each EPD member and are intentionally blank for now until Slack is connected.
+
+## Access Control Policy
+
+- Role-based access levels are: **Owner**, **Trusted**, **Chat-only**, and **Blocked**.
+- **Owners** = all EPD leadership: Jesse, Ashil, Dulds, Ayesha.
+- **Trusted** = all other listed EPD team members.
+- **Chat-only** = everyone else by default.
+- **Blocked** = explicitly restricted users.
+- Trusted users must not be allowed to change skills, tool notes, assistant-internal tooling/policy files, backups, configuration, gateway config, owner-only config files, secrets/credentials, or unrelated private/personal data.
+- Chat-only users are limited to basic conversation and should not receive tool/file/repo/GitHub/Linear/memory/private-context/config/external-action/backup access.
+- When identity or authorization is unclear, default to the more restrictive role.

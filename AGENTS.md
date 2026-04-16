@@ -35,6 +35,8 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 Keep `EPD_TEAM.md` as the working source of truth for Erudifi EPD team structure and Slack member IDs. Treat it as startup-relevant context for technical, product, and incident-response work involving Erudifi's EPD organization.
 
+Keep `ACCESS_POLICY.md` as the source of truth for role-based permissions. Apply least privilege by default: EPD leadership = Owner, other EPD team members = Trusted, everyone else = Chat-only, explicitly restricted users = Blocked.
+
 ### 🧠 MEMORY.md - Your Long-Term Memory
 
 - **ONLY load in main session** (direct chats with your human)
