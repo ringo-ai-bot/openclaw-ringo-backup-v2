@@ -61,3 +61,5 @@ Leave Slack member IDs blank for now. Fill them in once Slack is connected.
 
 - Setyo appears in both **Engineering** and **Data**.
 - This file is intended to become the working source of truth for team roster and Slack IDs.
+- `access-control.json` is the machine-readable permission map for runtime role resolution.
+- Use Slack member IDs for identity binding when available; exact-name matching is only a fallback.

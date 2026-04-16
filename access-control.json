@@ -1,0 +1,196 @@
+{
+  "version": 1,
+  "defaultRole": "chat-only",
+  "roles": {
+    "owner": {
+      "description": "Full access and permission.",
+      "permissions": [
+        "all"
+      ]
+    },
+    "trusted": {
+      "description": "Work-related help within constrained scope.",
+      "permissions": [
+        "conversation",
+        "engineering_help",
+        "product_help",
+        "qa_help",
+        "incident_help"
+      ],
+      "denies": [
+        "change_skills",
+        "change_tools_notes",
+        "change_internal_tooling",
+        "change_policy_files",
+        "request_workspace_backups",
+        "change_configuration",
+        "change_gateway_configuration",
+        "access_owner_only_config",
+        "access_memory_files_unless_strictly_required",
+        "access_secrets",
+        "access_credentials",
+        "access_personal_email",
+        "access_personal_calendar",
+        "access_private_docs_unrelated_to_engineering"
+      ]
+    },
+    "chat-only": {
+      "description": "Basic conversation only.",
+      "permissions": [
+        "conversation"
+      ],
+      "denies": [
+        "tool_use",
+        "file_reads",
+        "repository_access",
+        "github_access",
+        "linear_access",
+        "memory_disclosure",
+        "private_context_disclosure",
+        "change_configuration",
+        "external_actions",
+        "request_workspace_backups"
+      ]
+    },
+    "blocked": {
+      "description": "No access or permissions at all.",
+      "permissions": [],
+      "denies": [
+        "all"
+      ]
+    }
+  },
+  "people": {
+    "Jesse": {
+      "role": "owner",
+      "teams": [
+        "leadership",
+        "engineering"
+      ],
+      "title": "VP of Engineering",
+      "slackMemberId": ""
+    },
+    "Ashil": {
+      "role": "owner",
+      "teams": [
+        "leadership",
+        "engineering_management"
+      ],
+      "title": "Engineering Manager",
+      "slackMemberId": ""
+    },
+    "Dulds": {
+      "role": "owner",
+      "teams": [
+        "leadership",
+        "engineering_management"
+      ],
+      "title": "Engineering Manager",
+      "slackMemberId": ""
+    },
+    "Ayesha": {
+      "role": "owner",
+      "teams": [
+        "leadership",
+        "product"
+      ],
+      "title": "Head of Product",
+      "slackMemberId": ""
+    },
+    "Septiven": {
+      "role": "trusted",
+      "teams": [
+        "engineering"
+      ],
+      "title": "Engineer",
+      "slackMemberId": ""
+    },
+    "Setyo": {
+      "role": "trusted",
+      "teams": [
+        "engineering",
+        "data"
+      ],
+      "title": "Engineer / Data",
+      "slackMemberId": ""
+    },
+    "Ted": {
+      "role": "trusted",
+      "teams": [
+        "engineering"
+      ],
+      "title": "Engineer",
+      "slackMemberId": ""
+    },
+    "Diana": {
+      "role": "trusted",
+      "teams": [
+        "product"
+      ],
+      "title": "Product Manager",
+      "slackMemberId": ""
+    },
+    "Nena": {
+      "role": "trusted",
+      "teams": [
+        "product"
+      ],
+      "title": "Product Manager",
+      "slackMemberId": ""
+    },
+    "Elisabeth": {
+      "role": "trusted",
+      "teams": [
+        "qa"
+      ],
+      "title": "QA",
+      "slackMemberId": ""
+    },
+    "Puput": {
+      "role": "trusted",
+      "teams": [
+        "qa"
+      ],
+      "title": "QA",
+      "slackMemberId": ""
+    },
+    "Je": {
+      "role": "trusted",
+      "teams": [
+        "qa"
+      ],
+      "title": "QA",
+      "slackMemberId": ""
+    },
+    "Vanessa": {
+      "role": "trusted",
+      "teams": [
+        "design"
+      ],
+      "title": "Design",
+      "slackMemberId": ""
+    },
+    "Abe": {
+      "role": "trusted",
+      "teams": [
+        "infra"
+      ],
+      "title": "Infra",
+      "slackMemberId": ""
+    },
+    "Etta": {
+      "role": "trusted",
+      "teams": [
+        "data"
+      ],
+      "title": "Data",
+      "slackMemberId": ""
+    }
+  },
+  "resolution": {
+    "useSlackMemberIdWhenAvailable": true,
+    "fallbackToExactNameMatch": true,
+    "defaultOnUnknownIdentity": "chat-only",
+    "defaultOnAmbiguousIdentity": "chat-only"
+  }
+}
