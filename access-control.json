@@ -68,7 +68,7 @@
         "engineering"
       ],
       "title": "VP of Engineering",
-      "slackMemberId": ""
+      "slackMemberId": "UH2DF1PB9"
     },
     "Ashil": {
       "role": "owner",
@@ -77,7 +77,7 @@
         "engineering_management"
       ],
       "title": "Engineering Manager",
-      "slackMemberId": ""
+      "slackMemberId": "U04TARS9ECA"
     },
     "Dulds": {
       "role": "owner",
@@ -86,7 +86,7 @@
         "engineering_management"
       ],
       "title": "Engineering Manager",
-      "slackMemberId": ""
+      "slackMemberId": "U01KBEPNH7A"
     },
     "Ayesha": {
       "role": "owner",
@@ -95,7 +95,7 @@
         "product"
       ],
       "title": "Head of Product",
-      "slackMemberId": ""
+      "slackMemberId": "U024L29TW9W"
     },
     "Septiven": {
       "role": "trusted",
@@ -103,7 +103,7 @@
         "engineering"
       ],
       "title": "Engineer",
-      "slackMemberId": ""
+      "slackMemberId": "U02M715V23X"
     },
     "Setyo": {
       "role": "trusted",
@@ -112,7 +112,7 @@
         "data"
       ],
       "title": "Engineer / Data",
-      "slackMemberId": ""
+      "slackMemberId": "U018SQ9B1ML"
     },
     "Ted": {
       "role": "trusted",
@@ -120,7 +120,7 @@
         "engineering"
       ],
       "title": "Engineer",
-      "slackMemberId": ""
+      "slackMemberId": "UK96AKQVC"
     },
     "Diana": {
       "role": "trusted",
@@ -128,7 +128,7 @@
         "product"
       ],
       "title": "Product Manager",
-      "slackMemberId": ""
+      "slackMemberId": "U019E6VRTM3"
     },
     "Nena": {
       "role": "trusted",
@@ -136,7 +136,7 @@
         "product"
       ],
       "title": "Product Manager",
-      "slackMemberId": ""
+      "slackMemberId": "U0156FQ1FGQ"
     },
     "Elisabeth": {
       "role": "trusted",
@@ -144,7 +144,7 @@
         "qa"
       ],
       "title": "QA",
-      "slackMemberId": ""
+      "slackMemberId": "U034LUL54EB"
     },
     "Puput": {
       "role": "trusted",
@@ -152,7 +152,7 @@
         "qa"
       ],
       "title": "QA",
-      "slackMemberId": ""
+      "slackMemberId": "U06VC11L7U2"
     },
     "Je": {
       "role": "trusted",
@@ -160,7 +160,7 @@
         "qa"
       ],
       "title": "QA",
-      "slackMemberId": ""
+      "slackMemberId": "U09JRSZPQS1"
     },
     "Vanessa": {
       "role": "trusted",
@@ -168,7 +168,7 @@
         "design"
       ],
       "title": "Design",
-      "slackMemberId": ""
+      "slackMemberId": "U03P4SQ98LR"
     },
     "Abe": {
       "role": "trusted",
@@ -176,7 +176,7 @@
         "infra"
       ],
       "title": "Infra",
-      "slackMemberId": ""
+      "slackMemberId": "U0669Q56QVC"
     },
     "Etta": {
       "role": "trusted",
@@ -184,7 +184,7 @@
         "data"
       ],
       "title": "Data",
-      "slackMemberId": ""
+      "slackMemberId": "UAWHM9JEM"
     }
   },
   "resolution": {

@@ -41,21 +41,21 @@ Leave Slack member IDs blank for now. Fill them in once Slack is connected.
 
 | Name | Team | Slack Member ID |
 | --- | --- | --- |
-| Jesse | Leadership / Engineering | |
-| Ashil | Engineering Management | |
-| Dulds | Engineering Management | |
-| Septiven | Engineering | |
-| Setyo | Engineering / Data | |
-| Ted | Engineering | |
-| Ayesha | Product Leadership | |
-| Diana | Product Management | |
-| Nena | Product Management | |
-| Elisabeth | QA | |
-| Puput | QA | |
-| Je | QA | |
-| Vanessa | Design | |
-| Abe | Infra | |
-| Etta | Data | |
+| Jesse | Leadership / Engineering | UH2DF1PB9 |
+| Ashil | Engineering Management | U04TARS9ECA |
+| Dulds | Engineering Management | U01KBEPNH7A |
+| Septiven | Engineering | U02M715V23X |
+| Setyo | Engineering / Data | U018SQ9B1ML |
+| Ted | Engineering | UK96AKQVC |
+| Ayesha | Product Leadership | U024L29TW9W |
+| Diana | Product Management | U019E6VRTM3 |
+| Nena | Product Management | U0156FQ1FGQ |
+| Elisabeth | QA | U034LUL54EB |
+| Puput | QA | U06VC11L7U2 |
+| Je | QA | U09JRSZPQS1 |
+| Vanessa | Design | U03P4SQ98LR |
+| Abe | Infra | U0669Q56QVC |
+| Etta | Data | UAWHM9JEM |
 
 ## Notes
 
