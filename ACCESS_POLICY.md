@@ -124,4 +124,5 @@ If someone is explicitly marked restricted/blocked, treat them as **Blocked**.
 - This policy is intended to guide behavior across future Slack-connected workflows.
 - Slack member IDs should eventually be mapped in `EPD_TEAM.md` to support reliable identity-based enforcement.
 - `access-control.json` is the machine-readable source for runtime role resolution.
+- `access-actions.json` is the machine-readable action matrix for enforcement decisions.
 - Until identity mapping is implemented, use conservative judgment and default to lower privilege.

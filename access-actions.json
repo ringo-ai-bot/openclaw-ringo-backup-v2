@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "defaultRole": "chat-only",
+  "identity": {
+    "authoritativeKey": "slackMemberId",
+    "fallbacks": [
+      "exactName"
+    ],
+    "fallbackPolicy": {
+      "conversation": true,
+      "lowRiskRead": false,
+      "privilegedActions": false
+    },
+    "unknownIdentityRole": "chat-only",
+    "ambiguousIdentityRole": "chat-only"
+  },
+  "actions": {
+    "basic_conversation": {
+      "owner": "allow",
+      "trusted": "allow",
+      "chat-only": "allow",
+      "blocked": "deny"
+    },
+    "read_engineering_context": {
+      "owner": "allow",
+      "trusted": "allow",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "read_repository": {
+      "owner": "allow",
+      "trusted": "allow",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "read_workspace_files": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "edit_workspace_files": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related_and_not_protected",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "read_memory_files": {
+      "owner": "allow",
+      "trusted": "allow_if_strictly_required_for_engineering_task",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "edit_memory_files": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "read_policy_files": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "edit_policy_files": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "change_skills": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "change_tools_notes": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "run_shell_commands": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related_and_not_protected",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "use_github": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "use_linear": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "change_configuration": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "change_gateway_configuration": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "access_owner_only_configuration": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "request_workspace_backups": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "access_secrets_or_credentials": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "access_personal_email_calendar_private_docs": {
+      "owner": "allow",
+      "trusted": "deny",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "external_actions": {
+      "owner": "allow",
+      "trusted": "deny_unless_explicitly_authorized_for_workflow",
+      "chat-only": "deny",
+      "blocked": "deny"
+    }
+  },
+  "protectedPaths": [
+    "SOUL.md",
+    "AGENTS.md",
+    "TOOLS.md",
+    "MEMORY.md",
+    "ACCESS_POLICY.md",
+    "access-control.json",
+    "access-actions.json"
+  ],
+  "notes": [
+    "Slack member ID should become the authoritative identity key once available.",
+    "Exact-name fallback is only acceptable for conversation, not privileged actions.",
+    "Trusted users may work on engineering tasks but must not modify protected policy/governance/internal files."
+  ]
+}

@@ -192,5 +192,6 @@
     "fallbackToExactNameMatch": true,
     "defaultOnUnknownIdentity": "chat-only",
     "defaultOnAmbiguousIdentity": "chat-only"
-  }
+  },
+  "actionMatrixFile": "access-actions.json"
 }
