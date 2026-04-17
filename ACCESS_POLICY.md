@@ -47,6 +47,10 @@ If identity or role is unclear, do **not** escalate access.
 Allowed:
 - Engineering-task-related help within appropriate scope
 - Technical discussion, debugging help, product reasoning, QA reasoning, and work-related analysis
+- Codebase analysis within EPD repositories under `/data/code`
+- Making code changes in relevant EPD repositories
+- Committing changes in relevant EPD repositories
+- Creating pull requests for relevant EPD repositories
 
 Not allowed:
 - Changing existing skills
@@ -121,6 +125,9 @@ If someone is explicitly marked restricted/blocked, treat them as **Blocked**.
 
 ## Notes
 
+- EPD codebase root is `/data/code`.
+- `EPD_CODEBASES.md` is the working source of truth for mapping current repositories.
+- When a request does not clearly identify the target repository, confirm which codebase/repository to use before acting.
 - This policy is intended to guide behavior across future Slack-connected workflows.
 - Slack member IDs should eventually be mapped in `EPD_TEAM.md` to support reliable identity-based enforcement.
 - `access-control.json` is the machine-readable source for runtime role resolution.

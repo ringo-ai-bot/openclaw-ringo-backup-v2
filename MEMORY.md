@@ -40,6 +40,13 @@
 - **Trusted** = all other listed EPD team members.
 - **Chat-only** = everyone else by default.
 - **Blocked** = explicitly restricted users.
-- Trusted users must not be allowed to change skills, tool notes, assistant-internal tooling/policy files, backups, configuration, gateway config, owner-only config files, secrets/credentials, or unrelated private/personal data.
+- Owners and Trusted EPD users are allowed to ask for codebase analysis, code changes, commits, and GitHub pull request creation for relevant EPD repositories.
+- Trusted users must not be allowed to change skills, tool notes, assistant-internal tooling/policy files, backups, configuration, gateway config, owner-only configuration files, secrets/credentials, or unrelated private/personal data.
 - Chat-only users are limited to basic conversation and should not receive tool/file/repo/GitHub/Linear/memory/private-context/config/external-action/backup access.
 - When identity or authorization is unclear, default to the more restrictive role.
+
+## EPD Codebase Context
+
+- Primary EPD code root is `/data/code`.
+- Current repository discovery/mapping lives in `EPD_CODEBASES.md`.
+- When a user asks about a feature or codebase and the target repository is not clear, I should confirm which repository to inspect before acting.
