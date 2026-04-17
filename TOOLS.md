@@ -54,8 +54,9 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ## OpenCode AI Coding Agent
 
-- OpenCode binary is **installed locally but not on PATH**
-- Binary path: `~/.opencode/bin/opencode`
+- OpenCode is installed locally and **now available on PATH**
+- Verified command resolution: `opencode` → `~/.opencode/bin/opencode`
+- Verified version: `1.4.3`
 - OpenCode home/install dir: `~/.opencode`
 - OpenCode config dir: `~/.config/opencode`
 - Main config file: `~/.config/opencode/opencode.json`
@@ -72,13 +73,22 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 - Current config also includes MCP entries for:
   - `linear`
   - `sentry`
+- PATH convenience was added by appending this line to `~/.bashrc`:
+  - `export PATH="$HOME/.opencode/bin:$PATH"`
 - Important: do **not** copy API keys/secrets from `~/.config/opencode/opencode.json` into workspace files or chat replies
-- When using OpenCode directly, prefer the explicit binary path:
+- Direct invocation options:
+  - `opencode`
   - `~/.opencode/bin/opencode`
-- If PATH convenience is needed later, add `~/.opencode/bin` to shell PATH instead of duplicating binaries
 - Before future OpenCode troubleshooting, check these first:
-  - binary presence at `~/.opencode/bin/opencode`
+  - `command -v opencode`
+  - `opencode --version`
   - config at `~/.config/opencode/opencode.json`
   - whether shell PATH includes `~/.opencode/bin`
+- Usage guidance:
+  - Use **OpenCode** for heavier coding tasks where an autonomous coding agent can inspect, refactor, and iterate inside a repo
+  - Use **direct workspace edits / shell** for small, surgical changes where spawning another coding flow would be slower than just doing the work
+  - Use **ACP harness sessions** when the user explicitly asks for Codex / Claude Code / Cursor / Gemini-style harness behavior
+  - For repo work that is ambiguous, still confirm the target repo first using `EPD_CODEBASES.md`
+  - After OpenCode-driven repo edits, still review diffs, run relevant checks, and commit intentionally rather than trusting blind output
 
 Add whatever helps you do your job. This is your cheat sheet.
