@@ -79,11 +79,21 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 - Direct invocation options:
   - `opencode`
   - `~/.opencode/bin/opencode`
+- **PTY / TTY requirement:** `opencode run` should be executed with a TTY/PTY in this environment
+- OpenClaw execution rule for OpenCode:
+  - set `pty=true` on `exec` calls that run OpenCode interactively or via `opencode run`
+- Shell fallback wrappers when a PTY is needed:
+  - `script -q -c '<command>' /dev/null`
+  - `tmux` or another TTY-providing wrapper
+- Reliable PTY validation pattern that worked here:
+  - `script -q -c '~/.opencode/bin/opencode run "Respond with exactly OPENCODE_OK and nothing else."' /dev/null`
+- Verified PTY validation result: `OPENCODE_OK`
 - Before future OpenCode troubleshooting, check these first:
   - `command -v opencode`
   - `opencode --version`
   - config at `~/.config/opencode/opencode.json`
   - whether shell PATH includes `~/.opencode/bin`
+  - whether the command was launched with a PTY
 - Usage guidance:
   - Use **OpenCode** for heavier coding tasks where an autonomous coding agent can inspect, refactor, and iterate inside a repo
   - Use **direct workspace edits / shell** for small, surgical changes where spawning another coding flow would be slower than just doing the work
