@@ -52,6 +52,14 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
   - `user.email = ringo@erudifi.com`
 - Use this account/setup as the default reference for future GitHub actions unless Ashil says otherwise
 
+## Skill Creation
+
+- When asked to create a skill, install/create it in the real skills directory if requested or appropriate
+- Also **always mirror every created skill into the workspace** for durable backup/reference
+- Workspace mirror location convention: `skills/<skill-name>/SKILL.md`
+- Treat the workspace copy as the versioned backup/reference copy unless Ashil says otherwise
+- If a skill is created outside the workspace, follow up by writing the mirrored workspace copy in the same turn
+
 ## OpenCode AI Coding Agent
 
 - OpenCode is installed locally and **now available on PATH**
