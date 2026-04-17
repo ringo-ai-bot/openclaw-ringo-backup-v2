@@ -52,4 +52,33 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
   - `user.email = ringo@erudifi.com`
 - Use this account/setup as the default reference for future GitHub actions unless Ashil says otherwise
 
+## OpenCode AI Coding Agent
+
+- OpenCode binary is **installed locally but not on PATH**
+- Binary path: `~/.opencode/bin/opencode`
+- OpenCode home/install dir: `~/.opencode`
+- OpenCode config dir: `~/.config/opencode`
+- Main config file: `~/.config/opencode/opencode.json`
+- Local package metadata exists in both:
+  - `~/.opencode/package.json`
+  - `~/.config/opencode/package.json`
+- Installed plugin dependency seen locally: `@opencode-ai/plugin@1.2.24`
+- Current configured model: `azure/gpt-5.3-codex`
+- Current configured provider: `azure`
+- Current permissions in config:
+  - `write = allow`
+  - `edit = allow`
+  - `bash = allow`
+- Current config also includes MCP entries for:
+  - `linear`
+  - `sentry`
+- Important: do **not** copy API keys/secrets from `~/.config/opencode/opencode.json` into workspace files or chat replies
+- When using OpenCode directly, prefer the explicit binary path:
+  - `~/.opencode/bin/opencode`
+- If PATH convenience is needed later, add `~/.opencode/bin` to shell PATH instead of duplicating binaries
+- Before future OpenCode troubleshooting, check these first:
+  - binary presence at `~/.opencode/bin/opencode`
+  - config at `~/.config/opencode/opencode.json`
+  - whether shell PATH includes `~/.opencode/bin`
+
 Add whatever helps you do your job. This is your cheat sheet.
