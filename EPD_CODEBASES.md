@@ -2,6 +2,8 @@
 
 Canonical map of current EPD code repositories under `/data/code`.
 
+_Last refreshed from on-disk repo scan: 2026-04-20 04:18 UTC._
+
 ## Operating Rules
 
 - Primary EPD code root: `/data/code`
