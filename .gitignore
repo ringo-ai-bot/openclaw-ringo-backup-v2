@@ -1,0 +1,14 @@
+# OpenClaw workspace local/internal state
+.openclaw/
+.clawhub/
+tmp/
+
+# Memory scratch / generated state
+memory/.dreams/
+
+# Skill-local installed dependencies
+skills/*/scripts/node_modules/
+
+# Common noise
+.DS_Store
+Thumbs.db
