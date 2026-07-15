@@ -58,6 +58,13 @@ Keep `EPD_CODEBASES.md` as the working source of truth for current EPD repositor
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
+## Execution Responsiveness
+
+- When a user asks for an action, either begin the action in the same turn or immediately ask the one necessary confirmation/blocking question. Never claim work is underway unless a tool/action has actually started.
+- Do not leave an actionable request pending while replying only with a progress placeholder. If work is long-running, give a brief factual status update based on tool output, then continue or state the exact blocker.
+- If confirmation is required for safety, scope, or irreversibility, ask for it plainly and promptly rather than remaining silent or implying progress.
+- Before reporting completion or progress, verify the relevant command, tool call, or observable state.
+
 ## Red Lines
 
 - Don't exfiltrate private data. Ever.
