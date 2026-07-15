@@ -1,121 +1,155 @@
 ---
-name: linear-ticket-workflow
-description: Work on Linear tickets inside a code repository from intake through implementation and PR creation. Use when an authorized owner or trusted user asks to "work on a Linear ticket", "implement a Linear ticket", "take ownership of a Linear ticket", or otherwise wants end-to-end execution for a specific Linear issue that requires clarification, planning, code changes, and a GitHub pull request.
+name: "linear-ticket-workflow"
+description: "Canonical hardened workflow for Linear-backed code and pull request work."
 ---
 
 # Linear Ticket Workflow
 
-Use this skill to execute a Linear ticket end to end inside the correct repository.
+Use this skill for authorized Linear-ticket code or pull-request work. It is mandatory whenever a recognizable Linear issue identifier is paired with implementation, bug-fix, repository-change, branch, commit, or PR intent.
 
-## Authorization
+## Scope and authorization
 
-Only proceed with code/repo/GitHub actions when the requester is authorized under workspace policy.
+- Only proceed with repository, code, GitHub, or Linear state-changing actions for an authorized requester under workspace policy.
+- Read `ACCESS_POLICY.md` as needed. When the target repository is unclear, read `EPD_CODEBASES.md`.
+- Use the configured Linear MCP tools (`linear__*`) for ticket lookup, discussion, status-only changes, and planning-only requests; do not force this full workflow for those requests.
+- Linear access is scoped to the **Erudifi** workspace. Before state changes, verify the target issue/project belongs to that workspace.
+- MCP is the only Linear transport. Do not use a `linear` skill, `linear-cli.js`, `LINEAR_API_KEY`, direct GraphQL/REST calls, or any legacy Linear script.
+- Permitted Linear mutations are creating/updating issues and creating comments. Do not attempt deletes, attachments, label administration, or document/project/initiative/milestone/release/status-update writes, even if a tool later becomes available; those require an explicit policy change.
+- Do not begin code changes until the ticket, repository, and expected outcome are sufficiently clear to explain the plan.
 
-- Allow **Owner** users.
-- Allow **Trusted** users.
-- If the requester is **Chat-only** or authorization is unclear, stop and ask for clarification or decline the repo-changing action.
+## 1. Intake and preflight
 
-Read the workspace policy files only as needed:
+1. Use `linear__get_issue` and related read-only `linear__*` MCP tools to fetch the issue, including description, acceptance criteria, linked work, discussions, labels, assignee, state, project/cycle, and existing PR links. Use `linear__list_comments` for discussions when needed.
+2. Confirm the issue identifier, intended outcome, and affected repository. If the repository is ambiguous, identify candidates and ask before changing code.
+3. Surface missing acceptance criteria, assumptions, dependencies, rollout implications, migration requirements, and risks. Ask concise clarification questions when they materially affect the implementation.
+4. Before branching or handing work to OpenCode, verify:
+   - the target checkout is accessible;
+   - its working tree is clean or that any existing changes are understood and will not be touched;
+   - the remote and actual default branch are known;
+   - the matching GitHub repository is known;
+   - likely validation commands and Docker support are discovered where relevant;
+   - no existing branch or PR already implements the issue, unless the requested work is to continue it.
+5. Once scope, repository, and plan are understood, use `linear__save_issue` to update Linear to **In Progress** if the workflow/state model supports it. Do not mark an issue Done just because a PR was opened.
 
-- `ACCESS_POLICY.md` for permission rules
-- `EPD_CODEBASES.md` when the target repository is unclear
+## 2. Plan and working record
 
-## Workflow
+Create `/data/linear-plan/<ISSUE-ID>.md`. First verify that `/data/linear-plan/` exists or can be created and is writable.
 
-Run these phases in order unless the user explicitly narrows the scope.
+The plan is a working record; update it with implementation evidence, validation, PR URL, and cleanup outcome before completing the workflow.
 
-1. **Clarification / Information Gathering**
-   - Use the `linear` skill to fetch the relevant Linear ticket details first.
-   - Confirm the exact Linear ticket identifier and expected outcome.
-   - Gather the ticket context, constraints, acceptance criteria, linked discussions, and affected repository.
-   - Determine which repository the ticket maps to.
-   - If the repository is ambiguous, identify candidate repos and confirm the target before changing code.
-   - Verify that you have access to the target repository before planning implementation.
-   - Ask the requester for clarification when any part of the ticket, expected behavior, constraints, or acceptance criteria is still unclear.
-   - Surface missing information, hidden assumptions, dependencies, rollout concerns, and risk areas early.
+Use this structure:
 
-2. **Planning**
-   - Use the `linear` skill again during planning if you need to confirm ticket details, linked context, or status before implementation.
-   - During planning, inspect enough of the codebase to determine the correct repository, identify likely impacted files or subsystems, and produce a credible implementation plan.
-   - Beyond this planning-level inspection, do not do extra independent codebase investigation yourself during implementation unless the user explicitly asks.
-   - Produce a short implementation plan before editing code.
-   - Call out impacted files or subsystems, tests to update, migration or config concerns, and validation steps.
-   - If the ticket is underspecified, state what can be done now versus what needs product or engineering clarification.
-   - Create a temporary markdown planning file in `/data/linear-plan/` during this step.
-   - Before writing the file, verify that `/data/linear-plan/` exists or can be created and that it is writable from the current environment.
-   - Name the file with the Linear ticket / issue ID, for example `/data/linear-plan/OI-2931.md`.
-   - Include the Linear ticket / issue ID in both the filename and the markdown content.
-   - The planning file should contain the work/ticket context, implementation plan, todo list, and any other relevant notes.
+```md
+# <ISSUE-ID> — <ticket title>
 
-3. **Code Changes Implementation**
-   - Use the `create-branch` skill to create the ticket branch from the updated default branch.
-   - Act as a supervisor for OpenCode during this phase.
-   - Do not implement code changes directly in the repository yourself unless the user explicitly overrides this rule.
-   - Use OpenCode for all repository code changes in this phase.
-   - When invoking OpenCode from OpenClaw, remember that `opencode run` requires a PTY in this environment.
-   - Pass the approved work plan to OpenCode using a structured handoff based on the planning file. The handoff should include:
-     - Linear ticket / issue ID
-     - repository path
-     - planning file path in `/data/linear-plan/`
-     - ticket context / problem summary
-     - expected outcome
-     - constraints and non-goals
-     - impacted files or subsystems if already known
-     - todo list / checklist
-     - branch rule: update the repository default branch from remote first, then create a separate ticket branch from that freshly updated default branch
-     - validation expectations, including Docker preference for tests or migrations when supported
-     - instruction not to create new unit tests unless explicitly requested or clearly required by the ticket
-     - instruction to stop and surface blockers or ambiguity instead of guessing
-   - Before implementation starts, make sure the relevant repository default branch is up to date with the remote (for example `main` or `master`).
-   - Perform Linear-ticket-related code changes in a separate branch, not directly on the default branch.
-   - Create the ticket branch from the freshly updated default branch so implementation starts from the latest base.
-   - Instruct OpenCode to make the smallest set of changes that fully satisfies the ticket.
-   - Instruct OpenCode to preserve existing conventions, patterns, and architecture unless the ticket requires otherwise.
-   - Monitor OpenCode progress, review its outputs and diffs, and steer it if the implementation drifts or misses requirements.
-   - Do not create new unit tests by default unless the requester explicitly asks for them or the ticket clearly requires them.
-   - If tests need to be run or migrations need to be created/applied as part of validation, prefer running them through Docker when the repository supports that workflow.
-   - If Docker-based validation or migration execution is unavailable or fails due to environment limitations, clearly note that it was skipped and why.
-   - Record the IDs or names of every Docker container started specifically for this ticket workflow. Never treat pre-existing or shared containers as workflow-owned.
-   - Ensure OpenCode runs relevant tests, linters, or focused validation whenever practical.
-   - Do not proceed to later workflow steps until all of these done criteria are satisfied or explicitly called out as incomplete:
-     - code changes applied
-     - todos completed or explicitly marked incomplete
-     - diffs reviewed
-     - validation run or skipped with reason
-     - branch state is clean enough for commit / PR
-   - Summarize what changed, what was verified, and any remaining risks.
+## Ticket facts
+- Linear URL:
+- Requested outcome:
+- Acceptance criteria:
 
-4. **Creating GitHub Pull Request**
-   - Use the `commit` skill for any git commit needed before opening the pull request.
-   - Use the `github` skill when checking repository or pull request state on GitHub.
-   - Prepare the branch and commit history cleanly.
-   - Create or update the pull request with a clear title and body tied to the Linear ticket.
-   - Include problem, solution, validation, and follow-up notes.
-   - Use the `pr-writer` skill for creating or updating the pull request instead of improvising the PR text.
-   - After successfully creating the pull request, complete the cleanup phase before notifying the requester.
+## Repository and base branch
+- Repository:
+- Remote/default branch:
+- Existing work/PRs:
 
-5. **Post-PR Cleanup**
-   - Confirm the pull request was created or updated successfully before cleaning up.
-   - Return the affected repository checkout to its default branch (`main` or `master`). Determine the actual default branch from the remote when possible; do not assume `main`.
-   - Do not discard, reset, stash, or otherwise overwrite uncommitted work to accomplish this. If the checkout cannot safely return to the default branch, leave the repository unchanged and report the blocker.
-   - Stop every *running* Docker container recorded as started specifically for this ticket workflow. Do not stop pre-existing, shared, or unidentified containers, and do not remove containers unless the requester explicitly asks.
-   - Report cleanup failures clearly, including whether the repository remains on the ticket branch or any workflow-owned containers are still running.
-   - Notify the requester that the PR is ready, include its link, and summarize cleanup completion or any cleanup blockers.
+## Assumptions and open questions
 
-## Companion Skills Quick Cheat Sheet
+## Proposed approach
 
-- `linear` — read ticket details and clarify scope
-- `create-branch` — create the ticket branch from the updated default branch
-- `commit` — create commits using the required commit workflow
-- `github` — inspect GitHub repository / PR state when needed
-- `pr-writer` — create or update the pull request
+## Affected files and systems
 
-## Working Rules
+## Non-goals
 
-- Do not start coding before understanding the ticket well enough to explain the plan.
-- Push back on weak requirements, missing acceptance criteria, or risky shortcuts.
-- Prefer direct evidence from the repo, ticket, and linked context over assumptions.
-- Keep the user updated at phase boundaries for longer tasks.
-- If external side effects are needed beyond normal repo work, ask first when policy requires it.
+## Risk, rollout, and migration notes
 
-Keep this skill lean. Add detailed playbooks, templates, and ticket/PR examples later in `references/` as the workflow hardens.
+## Validation plan
+
+## Execution checklist
+- [ ] Preflight complete
+- [ ] Branch created
+- [ ] Implementation complete
+- [ ] Diff reviewed
+- [ ] Validation complete / skipped with reason
+- [ ] Commit created and pushed
+- [ ] Pull request created
+- [ ] Linear updated
+- [ ] Cleanup complete / blocker recorded
+
+## Evidence and links
+- Branch:
+- Commit(s):
+- Validation:
+- Pull request:
+- Cleanup:
+```
+
+Produce a short, credible plan before editing code. Include the impacted systems, focused validation, migration/config concerns, non-goals, and rollback/rollout concerns when applicable.
+
+## 3. Branch and OpenCode implementation
+
+1. Use the `create-branch` skill. Update the actual remote default branch first, then create an issue branch from that freshly updated base. Never implement directly on the default branch.
+2. Act as OpenCode's supervisor. Do not directly make repository code changes unless the requester explicitly overrides this rule.
+3. Invoke OpenCode with a PTY in this environment and provide a structured handoff containing:
+   - issue ID and Linear URL;
+   - repository path and branch;
+   - `/data/linear-plan/<ISSUE-ID>.md` path;
+   - problem summary, expected result, acceptance criteria, constraints, and non-goals;
+   - affected files/systems already known;
+   - explicit instruction to make the smallest complete change and preserve project conventions;
+   - requirement to stop and surface blockers rather than guess;
+   - focused validation requirements;
+   - Docker preference when supported;
+   - rule not to run migrations against staging or production, deploy, or perform other external side effects without explicit approval.
+4. OpenCode should use its RTK integration for concise routine command output, but must retain or recover precise raw diagnostics whenever filtered output is insufficient to troubleshoot a failure.
+5. Allow targeted, evidence-driven investigation during implementation when it is needed to resolve blockers, validate OpenCode's approach, assess risk, or review unexpected changes. Do not expand scope into unrelated exploration/refactoring.
+6. Review OpenCode's changed-file scope, `git diff`, `git status`, test/lint/typecheck output, dependency/config changes, and generated artifacts. Steer or reject drift, unrelated refactors, surprise dependency upgrades, secret exposure, or unsafe configuration changes.
+7. Tests:
+   - Do not add speculative tests solely to increase coverage.
+   - Add or update focused tests when changed behavior, acceptance criteria, or regression risk warrants them.
+   - If focused tests are not added where they might reasonably be expected, record why in the plan/PR.
+8. Migrations and Docker:
+   - Prefer repository-supported Docker workflows for local tests and migration validation.
+   - Only run migrations against explicitly approved local, development, or test environments.
+   - Record every container started specifically by this workflow; do not claim ownership of pre-existing/shared containers.
+   - If Docker or migration validation is unavailable, record the reason.
+
+Do not proceed until changes are applied, todos are completed or explicitly incomplete, the diff is reviewed, validation is run or skipped with reason, and the branch is ready for a commit.
+
+## 4. Commit, pull request, and Linear updates
+
+1. Use the `commit` skill for every commit.
+2. Use the `github` skill to inspect repository and PR state.
+3. Use the `pr-writer` skill to create or update the pull request; do not improvise a PR description.
+4. The PR must clearly tie to the Linear issue and include problem, solution, acceptance-criteria evidence, validation, risk/rollout/migration notes, and known follow-ups.
+5. Before reporting success, confirm the branch is pushed, the PR exists, and record its URL.
+6. Update the plan record with branch, commits, changed systems, validation evidence, PR URL, and known risks.
+7. Use `linear__save_comment` to add the PR URL and a concise implementation/validation note. Use `linear__save_issue` to move the ticket to **In Review** only after the PR succeeds and the workflow/state model supports it.
+
+## 5. Safe cleanup and definition of done
+
+After confirming the PR exists:
+
+1. Return the repository checkout to the actual default branch when safe. Never discard, reset, stash, or overwrite uncommitted work to do so. If unable to switch safely, leave it unchanged and report the blocker.
+2. Stop only workflow-owned Docker containers that are still running. Never stop shared, pre-existing, or unidentified containers, and never remove containers unless explicitly asked.
+3. The workflow is done only when the following have evidence or an explicit exception:
+   - acceptance criteria mapped to implementation/validation evidence;
+   - code changes and todo outcome recorded;
+   - changed-file scope/diff reviewed;\n   - focused validation run, or skipped with reason;
+   - no unintended files, generated artifacts, dependency changes, or secret/config exposure remain;
+   - commits pushed and PR URL recorded;
+   - Linear updated appropriately;
+   - plan updated with final evidence;
+   - cleanup finished or its blockers reported.
+4. Notify the requester with the PR link, a concise change/validation summary, remaining risks, and cleanup status.
+
+## Companion tools and skills
+
+- Configured Linear MCP (`linear__*`) — ticket details, linked context, permitted Linear updates
+- `create-branch` — fresh default-branch issue branch
+- `commit` — required commit workflow
+- `github` — GitHub/PR inspection
+- `pr-writer` — PR creation or updates
+
+## Enforcement routing rule
+
+For any request containing a recognizable Linear issue identifier plus an intent to implement, fix, modify repository code, create a branch, commit, or create/update a PR, invoke `linear-ticket-workflow` before repository changes. Do not bypass it unless the requester explicitly narrows the request to ticket lookup, discussion, status-only work, or planning only.
