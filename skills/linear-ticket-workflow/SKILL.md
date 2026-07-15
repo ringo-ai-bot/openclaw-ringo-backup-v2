@@ -75,6 +75,7 @@ Run these phases in order unless the user explicitly narrows the scope.
    - Do not create new unit tests by default unless the requester explicitly asks for them or the ticket clearly requires them.
    - If tests need to be run or migrations need to be created/applied as part of validation, prefer running them through Docker when the repository supports that workflow.
    - If Docker-based validation or migration execution is unavailable or fails due to environment limitations, clearly note that it was skipped and why.
+   - Record the IDs or names of every Docker container started specifically for this ticket workflow. Never treat pre-existing or shared containers as workflow-owned.
    - Ensure OpenCode runs relevant tests, linters, or focused validation whenever practical.
    - Do not proceed to later workflow steps until all of these done criteria are satisfied or explicitly called out as incomplete:
      - code changes applied
@@ -91,7 +92,15 @@ Run these phases in order unless the user explicitly narrows the scope.
    - Create or update the pull request with a clear title and body tied to the Linear ticket.
    - Include problem, solution, validation, and follow-up notes.
    - Use the `pr-writer` skill for creating or updating the pull request instead of improvising the PR text.
-   - After successfully creating the pull request, notify the requester that the PR is ready and include the pull request link.
+   - After successfully creating the pull request, complete the cleanup phase before notifying the requester.
+
+5. **Post-PR Cleanup**
+   - Confirm the pull request was created or updated successfully before cleaning up.
+   - Return the affected repository checkout to its default branch (`main` or `master`). Determine the actual default branch from the remote when possible; do not assume `main`.
+   - Do not discard, reset, stash, or otherwise overwrite uncommitted work to accomplish this. If the checkout cannot safely return to the default branch, leave the repository unchanged and report the blocker.
+   - Stop every *running* Docker container recorded as started specifically for this ticket workflow. Do not stop pre-existing, shared, or unidentified containers, and do not remove containers unless the requester explicitly asks.
+   - Report cleanup failures clearly, including whether the repository remains on the ticket branch or any workflow-owned containers are still running.
+   - Notify the requester that the PR is ready, include its link, and summarize cleanup completion or any cleanup blockers.
 
 ## Companion Skills Quick Cheat Sheet
 
