@@ -72,7 +72,7 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
   - `~/.opencode/package.json`
   - `~/.config/opencode/package.json`
 - Installed plugin dependency seen locally: `@opencode-ai/plugin@1.2.24`
-- Current configured model: `azure/gpt-5.3-codex`
+- Current configured model: `azure/gpt-5.6-terra`
 - Current configured provider: `azure`
 - Current permissions in config:
   - `write = allow`
@@ -108,5 +108,16 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
   - Use **ACP harness sessions** when the user explicitly asks for Codex / Claude Code / Cursor / Gemini-style harness behavior
   - For repo work that is ambiguous, still confirm the target repo first using `EPD_CODEBASES.md`
   - After OpenCode-driven repo edits, still review diffs, run relevant checks, and commit intentionally rather than trusting blind output
+
+## Hourly `/data/code` sync
+
+- Script: `/home/jesse/.openclaw/workspace/scripts/sync-codebases.sh`
+- Cron job name: `Hourly codebase sync` (id: `885913c4-4844-49d1-8a5b-2bc73eea0e45`)
+- Schedule: every `1h` via OpenClaw gateway cron (isolated, light-context, no Slack deliver)
+- Behavior: fetches each top-level `/data/code/*` git repo; fast-forwards local `main`/`master` to `origin` without clobbering dirty or feature-branch checkouts
+- Last-run log: `/home/jesse/.openclaw/workspace/memory/codebase-sync-last.json`
+- Manual script run: `bash /home/jesse/.openclaw/workspace/scripts/sync-codebases.sh`
+- Inspect job: `openclaw cron list` / `openclaw cron runs --id 885913c4-4844-49d1-8a5b-2bc73eea0e45`
+- Force run now: `openclaw cron run 885913c4-4844-49d1-8a5b-2bc73eea0e45`
 
 Add whatever helps you do your job. This is your cheat sheet.
