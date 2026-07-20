@@ -99,6 +99,12 @@
       "chat-only": "deny",
       "blocked": "deny"
     },
+    "use_metabase_core_loans": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related_read_only",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
     "change_configuration": {
       "owner": "allow",
       "trusted": "deny",
@@ -154,6 +160,7 @@
   "notes": [
     "Slack member ID should become the authoritative identity key once available.",
     "Exact-name fallback is only acceptable for conversation, not privileged actions.",
-    "Trusted users may work on engineering tasks but must not modify protected policy/governance/internal files."
+    "Trusted users may work on engineering tasks but must not modify protected policy/governance/internal files.",
+    "The metabase-core-loans helper may use its configured credential for authorized read-only queries, but the credential must never be disclosed to Trusted users."
   ]
 }

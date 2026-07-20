@@ -40,7 +40,7 @@ pre-commit run --files <changed files>
 
 - If the repository has a documented lint-only wrapper or make/npm task that is clearly the pre-commit equivalent, use that.
 - Treat formatters and linters required by pre-commit as part of the commit gate.
-- Example: in `core-loans`, pre-commit may run lint checks such as `isort`, `black`, and `flake8`; those must pass before committing.
+- Example: in `core-loans`, pre-commit may run lint checks such as `isort`, `black`, and `flake8`; those must pass before committing. Use the `core-loans-docker` skill to run formatters via Docker and ensure the Bukas `backend` container is up for the makemigrations hook.
 - If pre-commit checks fail because of lint or formatting issues, fix the issues first, rerun the checks, and only then create the commit.
 - Only stop and report back when the failure is not something that can be resolved as part of normal commit preparation (for example missing dependencies, broken environment, failing non-lint validation, or unclear/conflicting repo setup).
 
@@ -125,7 +125,7 @@ This is the only indicator of AI involvement that should appear in commits. Do n
 ```
 [OI-123] feat: Add create virtual account endpoints
 
-Add CRUD API endpoints for Virtual Account model 
+Add CRUD API endpoints for Virtual Account model
 
 Co-Authored-By: Ringo (ringo@erudifi.com)
 ```
@@ -143,7 +143,7 @@ Co-Authored-By: Ringo (ringo@erudifi.com)
 ### Dependencies version bumping
 
 ```
-chore: Bump Django version to 4.2.29 
+chore: Bump Django version to 4.2.29
 
 Bump Django version to from 4.2.27 to 4.2.29
 

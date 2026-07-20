@@ -98,7 +98,7 @@ Produce a short, credible plan before editing code. Include the impacted systems
    - explicit instruction to make the smallest complete change and preserve project conventions;
    - requirement to stop and surface blockers rather than guess;
    - focused validation requirements;
-   - Docker preference when supported;
+   - For `core-loans`, invoke `core-loans-docker` for all validation commands;
    - rule not to run migrations against staging or production, deploy, or perform other external side effects without explicit approval.
 4. OpenCode should use its RTK integration for concise routine command output, but must retain or recover precise raw diagnostics whenever filtered output is insufficient to troubleshoot a failure.
 5. Allow targeted, evidence-driven investigation during implementation when it is needed to resolve blockers, validate OpenCode's approach, assess risk, or review unexpected changes. Do not expand scope into unrelated exploration/refactoring.
@@ -123,7 +123,21 @@ Do not proceed until changes are applied, todos are completed or explicitly inco
 4. The PR must clearly tie to the Linear issue and include problem, solution, acceptance-criteria evidence, validation, risk/rollout/migration notes, and known follow-ups.
 5. Before reporting success, confirm the branch is pushed, the PR exists, and record its URL.
 6. Update the plan record with branch, commits, changed systems, validation evidence, PR URL, and known risks.
-7. Use `linear__save_comment` to add the PR URL and a concise implementation/validation note. Use `linear__save_issue` to move the ticket to **In Review** only after the PR succeeds and the workflow/state model supports it.
+7. Use `linear__save_comment` to add the PR URL and a concise implementation/validation note. Follow the calling rules below. Use `linear__save_issue` to move the ticket to **In Review** only after the PR succeeds and the workflow/state model supports it.
+
+### `linear__save_comment` calling rules
+
+Pass only the fields you mean to use. Omit unused optional fields entirely — never send empty strings.
+
+For a new issue comment, pass exactly:
+
+```json
+{ "issueId": "OI-1234", "body": "..." }
+```
+
+Do not include `id`, `projectId`, `initiativeId`, `documentId`, `milestoneId`, `parentId`, `statusUpdateId`, or `statusUpdateType` unless they are required for that specific action.
+
+Known failure mode: sending `statusUpdateType` (e.g. `"project"`) with an empty or missing `statusUpdateId` fails with `` `statusUpdateType` is only valid together with `statusUpdateId` ``. Those fields are only for commenting on a status update, and both must be real values together. Issue comments must not set them.
 
 ## 5. Safe cleanup and definition of done
 
@@ -149,6 +163,7 @@ After confirming the PR exists:
 - `commit` — required commit workflow
 - `github` — GitHub/PR inspection
 - `pr-writer` — PR creation or updates
+- `core-loans-docker` — required for all core-loans local validation (tests, migrations, scripts, formatters)
 
 ## Enforcement routing rule
 

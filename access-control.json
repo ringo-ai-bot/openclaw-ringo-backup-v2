@@ -15,7 +15,8 @@
         "engineering_help",
         "product_help",
         "qa_help",
-        "incident_help"
+        "incident_help",
+        "use_metabase_core_loans"
       ],
       "denies": [
         "change_skills",

@@ -47,10 +47,12 @@ If identity or role is unclear, do **not** escalate access.
 Allowed:
 - Engineering-task-related help within appropriate scope
 - Technical discussion, debugging help, product reasoning, QA reasoning, and work-related analysis
+- Using the `metabase-core-loans` skill for work-related Danacita/Bukas data questions and analytics
 - Codebase analysis within EPD repositories under `/data/code`
 - Making code changes in relevant EPD repositories
 - Committing changes in relevant EPD repositories
 - Creating pull requests for relevant EPD repositories
+- Using Linear for work-related actions, including creating, viewing, updating, and commenting on tickets within the appropriate EPD scope
 
 Not allowed:
 - Changing existing skills
@@ -117,6 +119,9 @@ If someone is explicitly marked restricted/blocked, treat them as **Blocked**.
 ## Enforcement Rules
 
 - Apply the **most restrictive reasonable interpretation** when uncertain.
+- Allow use of the `metabase-core-loans` skill only for **Owner** and **Trusted** users.
+- Deny Metabase skill use for **Chat-only**, **Blocked**, unknown, or ambiguously identified users.
+- Trusted users may run the skill's read-only query helper, but must never read, receive, or be shown the Metabase API key or other credentials.
 - Do not expose internal files, memory, private context, or tooling details to non-owner users.
 - Do not let Trusted users make assistant-governance or system-governance changes.
 - Do not treat familiarity as authorization.
