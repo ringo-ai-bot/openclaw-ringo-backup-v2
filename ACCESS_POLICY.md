@@ -48,6 +48,7 @@ Allowed:
 - Engineering-task-related help within appropriate scope
 - Technical discussion, debugging help, product reasoning, QA reasoning, and work-related analysis
 - Using the `metabase-core-loans` skill for work-related Danacita/Bukas data questions and analytics
+- Using the `airflow-mono-pipeline` skill for **read-only** Airflow inspection (list DAGs, runs, task status, logs)
 - Codebase analysis within EPD repositories under `/data/code`
 - Making code changes in relevant EPD repositories
 - Committing changes in relevant EPD repositories
@@ -64,6 +65,7 @@ Not allowed:
 - Owner-only configuration files
 - Accessing or changing memory files unless strictly required for the engineering task
 - Accessing secrets or credentials
+- Airflow write operations via `airflow-mono-pipeline` (trigger DAG, clear/retry, pause/unpause) — Owner only
 - Accessing personal email, calendar, or private docs unrelated to engineering work
 
 ### 3. Chat-only
@@ -122,6 +124,10 @@ If someone is explicitly marked restricted/blocked, treat them as **Blocked**.
 - Allow use of the `metabase-core-loans` skill only for **Owner** and **Trusted** users.
 - Deny Metabase skill use for **Chat-only**, **Blocked**, unknown, or ambiguously identified users.
 - Trusted users may run the skill's read-only query helper, but must never read, receive, or be shown the Metabase API key or other credentials.
+- Allow `airflow-mono-pipeline` **read** (`use_airflow_mono_pipeline_read`) for **Owner** and work-related **Trusted** use.
+- Allow `airflow-mono-pipeline` **write** (`use_airflow_mono_pipeline_write`: trigger, clear/retry, pause/unpause) for **Owner** only.
+- Deny Airflow skill use for **Chat-only**, **Blocked**, unknown, or ambiguously identified users.
+- Trusted users must never read, receive, or be shown Airflow API username/password files.
 - Do not expose internal files, memory, private context, or tooling details to non-owner users.
 - Do not let Trusted users make assistant-governance or system-governance changes.
 - Do not treat familiarity as authorization.

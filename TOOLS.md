@@ -37,6 +37,12 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ---
 
+## Media
+
+- Inbound attachments: `/home/jesse/.openclaw/media/inbound` (`~/.openclaw/media/inbound`)
+- Outbound / generated deliverables: `/home/jesse/.openclaw/media/outbound` (`~/.openclaw/media/outbound`)
+- Follow the `media-files` skill when generating or attaching files; do not leave finals in the workspace root
+
 ## GitHub
 
 - GitHub username: `ringo-ai-bot`
@@ -119,5 +125,18 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 - Manual script run: `bash /home/jesse/.openclaw/workspace/scripts/sync-codebases.sh`
 - Inspect job: `openclaw cron list` / `openclaw cron runs --id 885913c4-4844-49d1-8a5b-2bc73eea0e45`
 - Force run now: `openclaw cron run 885913c4-4844-49d1-8a5b-2bc73eea0e45`
+
+## Airflow (mono-pipeline)
+
+- Skill: `airflow-mono-pipeline` (`.agents/skills/airflow-mono-pipeline/`, mirrored under `skills/`)
+- Prod URL: `https://airflow.erudifi.com` (Airflow 2.7.2, REST `/api/v1`)
+- DAG repo: `/data/code/mono-pipeline`
+- Cloudflare Access: this host public IP `20.195.24.194` is allowlisted (service token not required while allowlist holds)
+- Secret paths (do not commit or echo values):
+  - `~/.openclaw/secrets/airflow-api-username.txt`
+  - `~/.openclaw/secrets/airflow-api-password.txt`
+- Helper: `python3 .agents/skills/airflow-mono-pipeline/scripts/airflow_api.py ...`
+- DAG catalog: `.agents/skills/airflow-mono-pipeline/DAGS.md` (all `is_active` DAGs; refresh via `scripts/generate_dag_catalog.py`)
+- Access: Trusted may read; Owner-only for trigger/clear/pause (`--confirm-write`)
 
 Add whatever helps you do your job. This is your cheat sheet.

@@ -16,7 +16,8 @@
         "product_help",
         "qa_help",
         "incident_help",
-        "use_metabase_core_loans"
+        "use_metabase_core_loans",
+        "use_airflow_mono_pipeline_read"
       ],
       "denies": [
         "change_skills",
