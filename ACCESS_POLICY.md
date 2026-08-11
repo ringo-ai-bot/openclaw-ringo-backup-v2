@@ -49,6 +49,7 @@ Allowed:
 - Technical discussion, debugging help, product reasoning, QA reasoning, and work-related analysis
 - Using the `metabase-core-loans` skill for work-related Danacita/Bukas data questions and analytics
 - Using the `airflow-mono-pipeline` skill for **read-only** Airflow inspection (list DAGs, runs, task status, logs)
+- Using the `core-loans-s3-presign` skill for work-related short-lived Danacita/Bukas file download URLs
 - Codebase analysis within EPD repositories under `/data/code`
 - Making code changes in relevant EPD repositories
 - Committing changes in relevant EPD repositories
@@ -128,6 +129,9 @@ If someone is explicitly marked restricted/blocked, treat them as **Blocked**.
 - Allow `airflow-mono-pipeline` **write** (`use_airflow_mono_pipeline_write`: trigger, clear/retry, pause/unpause) for **Owner** only.
 - Deny Airflow skill use for **Chat-only**, **Blocked**, unknown, or ambiguously identified users.
 - Trusted users must never read, receive, or be shown Airflow API username/password files.
+- Allow `core-loans-s3-presign` (`use_core_loans_s3_presign`) for **Owner** and work-related **Trusted** use.
+- Deny S3 presign skill use for **Chat-only**, **Blocked**, unknown, or ambiguously identified users.
+- Trusted users may receive a short-lived file URL, but must never read, receive, or be shown AWS access keys, secret keys, session tokens, or secret-file contents.
 - Do not expose internal files, memory, private context, or tooling details to non-owner users.
 - Do not let Trusted users make assistant-governance or system-governance changes.
 - Do not treat familiarity as authorization.
