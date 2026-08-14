@@ -57,12 +57,39 @@ Add to `/etc/hosts` if needed:
 
 ## Tests
 
+### Efficient ticket / iterative validation
+
+Cold `docker compose up` + `down` on every `run.sh` invocation dominates wait
+time. For more than one test/migrate/format command in a session:
+
+```bash
+SCRIPT=~/.openclaw/workspace/skills/core-loans-docker/scripts/run.sh
+REPO=/data/code/.worktrees/core-loans-<issue>   # or checkout root
+
+bash "$SCRIPT" --repo "$REPO" --keep-up up
+bash "$SCRIPT" --repo "$REPO" --keep-up --no-up \
+  test tests.loans.test_foo.TestClass.test_method --keepdb
+# …more --keep-up --no-up commands…
+docker compose -f docker-compose.danacita.yml --project-directory "$REPO" down
+```
+
+Rules of thumb:
+
+- Narrowest path first: `module.Class.method`, then class/module, then suite.
+- Use `--keepdb` unless migrations or test DB setup changed.
+- Prefer one blocking command (or one long `process` wait) over `timeout:0`
+  busy-poll loops.
+
 ### Django test runner (default)
 
 ```bash
-scripts/run.sh test                                    # full suite
+# One-shot (up → test → down)
+scripts/run.sh test                                    # full suite — avoid mid-ticket
 scripts/run.sh test loans.tests.test_loan_approval --keepdb
 scripts/run.sh test -v2 --failfast loans.tests.test_foo
+
+# Iterative (stack already warm)
+scripts/run.sh --keep-up --no-up test loans.tests.test_loan_approval.SomeTest.test_case --keepdb
 ```
 
 Use `--keepdb` unless migrations or test DB setup changed.

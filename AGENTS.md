@@ -116,6 +116,21 @@ In group chats where you receive every message, be **smart about when to contrib
 
 Participate, don't dominate.
 
+### Slack thread parent context
+
+This applies to **channel threads and DM threads**. If the inbound Slack envelope has `threadId`, `thread_ts`, or `TransportThreadId`, treat it as a thread reply even when the OpenClaw session is the peer DM (`slack:direct:<user>`) rather than a `:thread:` session.
+
+The original root is often **not** in the prompt — especially when you authored it from another session (for example Ashil asked you to DM Diana). Do **not** inherit the sender’s session, dump the whole channel, or treat an older top-level DM topic as the thread’s subject.
+
+On the first turn of a Slack thread reply (or whenever the user refers to “the original message”, “this thread”, “those tickets”, or similar), fetch **only the parent message**:
+
+1. Take `threadId` / `thread_ts` / `TransportThreadId` from the inbound envelope (it matches the parent message timestamp).
+2. Call `message` with `action: "read"`, `channel: "slack"`, `target` = the Slack conversation id (channel `C…` or DM `D…` / `user:U…`), and `messageId` equal to that thread id.
+3. Do **not** use `threadId` alone on `read` — that returns replies and **strips the parent**.
+4. Do **not** use `before`/`around`/`limit` or `sessions_history` to pull surrounding channel or DM history for this purpose.
+
+Use that single parent body as the thread’s original context, then answer. Follow `skills/slack-thread-parent/SKILL.md`.
+
 ## Tools
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.

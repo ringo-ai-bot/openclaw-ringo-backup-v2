@@ -5,6 +5,8 @@ description: >-
   isort, black, pytest) exclusively via Docker. Use automatically for any
   core-loans repo task involving tests, migrations, scripts, lint/format, or
   local validation — including worktrees under /data/code or /home/jesse/code.
+  For multi-step ticket validation, keep the stack warm with --keep-up / --no-up
+  and run focused tests with --keepdb to avoid slow cold starts and busy-wait polls.
 ---
 
 # core-loans Docker
@@ -35,9 +37,13 @@ For read-only lending analytics, use `metabase-core-loans` instead.
    PH-specific or the user requests it.
 4. **Local only** — migrations and tests target the local Docker Postgres. Never
    run against staging or production databases.
-5. **Default cleanup** — after each helper-script run, tear the compose stack
-   back down so no core-loans containers remain running. Use `--keep-up` only
-   when the user explicitly wants containers left up.
+5. **Stack lifecycle** —
+   - **One-shot** command (single migrate/format/test, then done): default
+     helper behavior is fine (up → run → `docker compose down`).
+   - **Multi-step validation** (Linear ticket, iterative test/fix loops):
+     keep the stack warm with `--keep-up` for the session; use `--no-up` on
+     follow-up commands; tear down once at the end. Do **not** pay cold-start
+     cost on every test rerun.
 
 ## Context mapping
 
@@ -63,44 +69,87 @@ BACKEND=backend
 
 ## Workflow
 
+### A. Multi-step ticket / iterative validation (preferred when testing more than once)
+
 Copy this checklist and track progress:
 
 ```
-- [ ] 1. Resolve repo path (checkout or /data/code/core-loans)
+- [ ] 1. Resolve repo path (worktree or /data/code/core-loans)
 - [ ] 2. Resolve Danacita vs Bukas (default Danacita)
-- [ ] 3. cd to repo root
-- [ ] 4. Ensure stack is up (start if needed; record containers)
-- [ ] 5. Run command via scripts/run.sh or docker compose exec
-- [ ] 6. Tear the stack back down unless the user explicitly asked to keep it up
-- [ ] 7. Report exit code and relevant output
+- [ ] 3. Warm the stack once with --keep-up up
+- [ ] 4. Run focused commands with --keep-up --no-up (and --keepdb for tests)
+- [ ] 5. Prefer the narrowest test path (module.Class.method)
+- [ ] 6. Wait with one blocking exec or a single long process.poll — never timeout:0 spam
+- [ ] 7. Tear the stack down once when validation is finished
+- [ ] 8. Report exit code and relevant output
+```
+
+Warm once, then reuse:
+
+```bash
+SCRIPT=~/.openclaw/workspace/skills/core-loans-docker/scripts/run.sh
+REPO=/data/code/.worktrees/core-loans-<issue-id-kebab>   # or active checkout
+
+# 1) Bring stack up and leave it running
+bash "$SCRIPT" --repo "$REPO" --keep-up up
+
+# 2) Fast reruns (no compose up/down)
+bash "$SCRIPT" --repo "$REPO" --keep-up --no-up \
+  test tests.loans.test_foo.TestClass.test_method --keepdb
+
+bash "$SCRIPT" --repo "$REPO" --keep-up --no-up \
+  manage makemigrations --check
+
+bash "$SCRIPT" --repo "$REPO" --keep-up --no-up \
+  isort path/to/file.py
+
+# 3) Tear down once when done (omit --keep-up on a final throwaway command,
+#    or compose down explicitly)
+docker compose -f docker-compose.danacita.yml --project-directory "$REPO" down
+```
+
+### B. One-shot command
+
+```
+- [ ] 1. Resolve repo path
+- [ ] 2. Resolve Danacita vs Bukas (default Danacita)
+- [ ] 3. Run via scripts/run.sh (default: up → command → down)
+- [ ] 4. Report exit code and relevant output
+```
+
+```bash
+bash ~/.openclaw/workspace/skills/core-loans-docker/scripts/run.sh \
+  --repo "$REPO" test loans.tests.test_foo --keepdb
 ```
 
 ### Step details
 
-1. **Repo** — `cd` to the core-loans checkout root before any Docker command.
+1. **Repo** — `cd` to the core-loans checkout root before any Docker command, or
+   pass `--repo`.
 2. **Context** — default Danacita; see mapping table above.
-3. **Preflight** — ensure stack is running:
-
-```bash
-docker compose $COMPOSE ps
-docker compose $COMPOSE up -d   # if backend service is not up
-```
-
+3. **Preflight** — for multi-step work, warm with `--keep-up up` first. For
+   one-shot, the helper brings the stack up automatically.
 4. **Run** — prefer the helper script from the OpenClaw workspace:
 
 ```bash
-# From any directory; pass --repo if not inside the checkout
-python3 skills/core-loans-docker/scripts/run.sh test loans.tests.test_foo --keepdb
-python3 skills/core-loans-docker/scripts/run.sh migrate
-python3 skills/core-loans-docker/scripts/run.sh manage makemigrations --check
-python3 skills/core-loans-docker/scripts/run.sh exec python scripts/foo.py --arg
-python3 skills/core-loans-docker/scripts/run.sh --context bukas test payments.tests.test_bar
-python3 skills/core-loans-docker/scripts/run.sh isort path/to/file.py
-python3 skills/core-loans-docker/scripts/run.sh black path/to/file.py
-python3 skills/core-loans-docker/scripts/run.sh --keep-up migrate
+SCRIPT=~/.openclaw/workspace/skills/core-loans-docker/scripts/run.sh
+
+# One-shot (tears down after)
+bash "$SCRIPT" --repo "$REPO" test loans.tests.test_foo --keepdb
+bash "$SCRIPT" --repo "$REPO" migrate
+bash "$SCRIPT" --repo "$REPO" manage makemigrations --check
+bash "$SCRIPT" --repo "$REPO" exec python scripts/foo.py --arg
+bash "$SCRIPT" --repo "$REPO" --context bukas test payments.tests.test_bar
+bash "$SCRIPT" --repo "$REPO" isort path/to/file.py
+bash "$SCRIPT" --repo "$REPO" black path/to/file.py
+
+# Multi-step session (warm stack)
+bash "$SCRIPT" --repo "$REPO" --keep-up up
+bash "$SCRIPT" --repo "$REPO" --keep-up --no-up test loans.tests.test_foo --keepdb
+bash "$SCRIPT" --repo "$REPO" --keep-up --no-up migrate
 ```
 
-Or build commands manually from repo root:
+Or build commands manually from repo root (stack already up):
 
 ```bash
 docker compose $COMPOSE exec -T $BACKEND ./manage.py migrate
@@ -114,16 +163,33 @@ docker compose $COMPOSE exec -T $BACKEND python {script_path} {args}
 Use `-T` (no TTY) for non-interactive agent runs. Omit `-T` only for interactive
 shell debugging.
 
-The helper script brings up the required services, runs the command, then
-executes `docker compose down` by default on exit. Pass `--keep-up` only when
-the user explicitly wants the containers to remain running after the command.
+Without `--keep-up`, the helper brings up required services, runs the command,
+then executes `docker compose down`. That cold start/teardown cycle is expensive;
+avoid it during iterative validation.
 
-### Test guidance
+### Test guidance (efficiency)
 
-- Prefer `--keepdb` for faster reruns when schema/migrations did not change.
+- **Narrowest target first** — prefer
+  `app.tests.test_mod.TestClass.test_method` over a whole module or the full
+  suite. Widen only after the focused case passes or when acceptance criteria
+  require broader coverage.
+- Prefer **`--keepdb`** for faster reruns when schema/migrations did not change.
 - Omit `--keepdb` when migrations, test DB setup, or schema changes require a
   fresh database.
-- Example: `scripts/run.sh test loans.tests.test_loan_approval --keepdb`
+- During a ticket session: **`--keep-up` + `--no-up` + `--keepdb`** for every
+  test rerun after the first warm-up.
+- Do **not** start OpenCode, full-suite tests, and migration checks as many
+  overlapping background sessions unless the user asked for parallel work.
+- **Waiting on long commands** — prefer one blocking `exec` that runs to
+  completion, or a single `process` poll/log with a real wait timeout
+  (tens of seconds). Never spam `process.poll` with `timeout: 0` every few
+  seconds (that burns model turns without speeding up Docker/tests).
+- Example focused rerun:
+
+```bash
+bash "$SCRIPT" --repo "$REPO" --keep-up --no-up \
+  test tests.loans.test_coordination_dashboard.SomeTest.test_revision_required --keepdb
+```
 
 ### Host exception
 
@@ -157,10 +223,13 @@ backend container before running pre-commit.
 ## Safety rules
 
 - Migrations and tests: **local Docker only**. Never staging/production.
-- The helper script should leave **no core-loans containers running** after it
-  completes unless the user explicitly asked for `--keep-up`.
-- Use `--keep-up` sparingly, and only when the user wants to inspect or reuse a
-  live local stack.
+- One-shot helper runs should leave **no** core-loans containers running after
+  they complete (default tear-down).
+- Multi-step sessions **should** leave the stack up until validation finishes,
+  then tear down once. Record workflow-owned containers; do not stop shared or
+  pre-existing stacks you did not start.
+- Never leave a forgotten stack running across unrelated sessions; clean up at
+  end of the ticket workflow.
 
 ## Scripts
 

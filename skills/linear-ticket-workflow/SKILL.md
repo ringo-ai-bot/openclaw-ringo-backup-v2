@@ -66,8 +66,9 @@ Use this structure:
 ## Risk, rollout, and migration notes
 
 ## Validation plan
+- Focused test path(s) (module.Class.method):
+- Docker context (danacita/bukas) and warm-stack notes (--keep-up / --keepdb):
 
-## Execution checklist
 - [ ] Preflight complete
 - [ ] Worktree and issue branch created
 - [ ] Implementation complete
@@ -117,7 +118,7 @@ git -C /data/code/<repo> worktree add -b <type>/<issue-id> \
    - explicit instruction to make the smallest complete change and preserve project conventions;
    - requirement to stop and surface blockers rather than guess;
    - focused validation requirements;
-   - For `core-loans`, invoke `core-loans-docker` for all validation commands (with `--repo` pointing at the worktree);
+   - For `core-loans`, invoke `core-loans-docker` for all validation commands (with `--repo` pointing at the worktree). Follow that skill’s **multi-step ticket validation** pattern: warm once with `--keep-up up`, then `--keep-up --no-up` (+ `--keepdb` for tests) for reruns, and tear down once at cleanup — do not cold-start/tear-down the stack on every command;
    - rule not to run migrations against staging or production, deploy, or perform other external side effects without explicit approval.
 4. OpenCode should use its RTK integration for concise routine command output, but must retain or recover precise raw diagnostics whenever filtered output is insufficient to troubleshoot a failure.
 5. Allow targeted, evidence-driven investigation during implementation when it is needed to resolve blockers, validate OpenCode's approach, assess risk, or review unexpected changes. Do not expand scope into unrelated exploration/refactoring.
@@ -126,9 +127,12 @@ git -C /data/code/<repo> worktree add -b <type>/<issue-id> \
    - Do not add speculative tests solely to increase coverage.
    - Add or update focused tests when changed behavior, acceptance criteria, or regression risk warrants them.
    - If focused tests are not added where they might reasonably be expected, record why in the plan/PR.
+   - When validating, run the **narrowest** failing/relevant test path first (`module.Class.method`), then widen only if needed. Prefer `--keepdb` when schema did not change.
+   - Do not busy-poll background jobs with zero-timeout `process.poll` loops; use one blocking command or a single long wait.
 8. Migrations and Docker:
-   - Prefer repository-supported Docker workflows for local tests and migration validation.
+   - Prefer repository-supported Docker workflows for local tests and migration validation (`core-loans-docker` for `core-loans`).
    - Only run migrations against explicitly approved local, development, or test environments.
+   - For multi-command validation on `core-loans`, keep the compose stack warm for the ticket session (`--keep-up` / `--no-up`); tear down once in cleanup.
    - Record every container started specifically by this workflow; do not claim ownership of pre-existing/shared containers.
    - If Docker or migration validation is unavailable, record the reason.
 
@@ -164,7 +168,7 @@ After confirming the PR exists:
 
 1. Leave the primary checkout exactly as found. Never switch, discard, reset, stash, or overwrite uncommitted work there or in unrelated worktrees.
 2. After PR success, remove only the workflow-owned issue worktree when safe (`git worktree remove` on that path). If it is dirty or locked, leave it unchanged and report the blocker. Never delete unrelated worktrees.
-3. Stop only workflow-owned Docker containers that are still running. Never stop shared, pre-existing, or unidentified containers, and never remove containers unless explicitly asked.
+3. Stop only workflow-owned Docker containers that are still running (including any stack left up via `core-loans-docker --keep-up`). Never stop shared, pre-existing, or unidentified containers, and never remove containers unless explicitly asked.
 4. The workflow is done only when the following have evidence or an explicit exception:
    - acceptance criteria mapped to implementation/validation evidence;
    - code changes and todo outcome recorded;
@@ -184,7 +188,7 @@ After confirming the PR exists:
 - `commit` — required commit workflow
 - `github` — GitHub/PR inspection
 - `pr-writer` — PR creation or updates
-- `core-loans-docker` — required for all core-loans local validation (tests, migrations, scripts, formatters); pass the issue worktree with `--repo`
+- `core-loans-docker` — required for all core-loans local validation (tests, migrations, scripts, formatters); pass the issue worktree with `--repo`; use warm-stack `--keep-up` / `--no-up` and focused `--keepdb` tests during iterative validation
 
 ## Enforcement routing rule
 

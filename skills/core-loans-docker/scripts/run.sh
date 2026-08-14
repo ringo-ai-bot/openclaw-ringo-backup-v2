@@ -39,6 +39,9 @@ Examples:
   run.sh exec python scripts/foo.py --arg
   run.sh --context bukas test payments.tests.test_bar
   run.sh --repo /data/code/core-loans isort path/to/file.py
+  # Multi-step ticket session (warm stack — prefer this for iterative tests):
+  run.sh --repo /path/to/worktree --keep-up up
+  run.sh --repo /path/to/worktree --keep-up --no-up test app.tests.mod.T.test_x --keepdb
 EOF
 }
 

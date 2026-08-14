@@ -37,6 +37,15 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ---
 
+## Slack thread parent
+
+- Applies to **channel and DM** threads. DM replies with `threadId` are often folded into `slack:direct:<user>` and still need the parent fetch.
+- Fetch **only** the parent with `message` `action=read`, `messageId=<threadId>`. `target` is the channel `C…` or DM `D…` / `user:U…`.
+- `read` with `threadId` (no `messageId`) omits the parent on purpose.
+- Outbound DMs sent from another person’s session are not copied into the recipient session; Slack parent read is the source of truth.
+- Do **not** set `channels.slack.thread.inheritParent` — that copies the full channel transcript into every new thread session.
+- Skill: `skills/slack-thread-parent/SKILL.md`
+
 ## Media
 
 - Inbound attachments: `/home/jesse/.openclaw/media/inbound` (`~/.openclaw/media/inbound`)
