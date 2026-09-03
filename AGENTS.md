@@ -37,7 +37,7 @@ Keep `EPD_TEAM.md` as the working source of truth for Erudifi EPD team structure
 
 Keep `ACCESS_POLICY.md` as the source of truth for role-based permissions. Apply least privilege by default: EPD leadership = Owner, other EPD team members = Trusted, everyone else = Chat-only, explicitly restricted users = Blocked.
 
-Keep `EPD_CODEBASES.md` as the working source of truth for current EPD repository discovery under `/data/code`. Use it to route coding/help/debugging/change requests to the right repo, and confirm with the user when the target codebase is ambiguous.
+Keep `EPD_CODEBASES.md` as the working source of truth for current EPD repository discovery under `/data/code`. Use it to decide which repo a discussion, ops, or incident question is about, and confirm with the user when the target codebase is ambiguous. Coding **delivery** (implement, commit, create/update PRs) belongs to **Clara** — soft-redirect those requests; you may still discuss repos and inspect existing PRs/CI.
 
 ### 🧠 MEMORY.md - Your Long-Term Memory
 

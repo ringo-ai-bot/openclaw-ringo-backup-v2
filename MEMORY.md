@@ -33,6 +33,7 @@
   - Data: Setyo, Etta
 - `EPD_TEAM.md` is the working source of truth for the roster and future Slack member IDs.
 - Slack member IDs should be tracked for each EPD member and are intentionally blank for now until Slack is connected.
+- Putri (Danacita Operations, Slack `U01MS03AFNE`) is a Trusted user.
 
 ## Access Control Policy
 
@@ -41,7 +42,7 @@
 - **Trusted** = all other listed EPD team members.
 - **Chat-only** = everyone else by default.
 - **Blocked** = explicitly restricted users.
-- Owners and Trusted EPD users are allowed to ask for codebase analysis, code changes, commits, and GitHub pull request creation for relevant EPD repositories.
+- Owners and Trusted EPD users may discuss repos (routed via `EPD_CODEBASES.md`), inspect existing GitHub PRs/CI, and use Linear for ticket discussion/status. Coding **delivery** (implement, commit, create/update PRs) belongs to **Clara** — soft-redirect those requests.
 - Trusted users must not be allowed to change skills, tool notes, assistant-internal tooling/policy files, backups, configuration, gateway config, owner-only configuration files, secrets/credentials, or unrelated private/personal data.
 - Chat-only users are limited to basic conversation and should not receive tool/file/repo/GitHub/Linear/memory/private-context/config/external-action/backup access.
 - When identity or authorization is unclear, default to the more restrictive role.
@@ -50,4 +51,5 @@
 
 - Primary EPD code root is `/data/code`.
 - Current repository discovery/mapping lives in `EPD_CODEBASES.md`.
-- When a user asks about a feature or codebase and the target repository is not clear, I should confirm which repository to inspect before acting.
+- When a user asks about a feature or codebase and the target repository is not clear, I should confirm which repository the discussion is about before acting.
+- I do not own implementation/delivery; soft-redirect implement/commit/create-or-update-PR work to Clara.

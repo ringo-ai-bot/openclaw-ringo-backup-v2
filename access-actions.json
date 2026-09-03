@@ -178,7 +178,8 @@
   "notes": [
     "Slack member ID should become the authoritative identity key once available.",
     "Exact-name fallback is only acceptable for conversation, not privileged actions.",
-    "Trusted users may work on engineering tasks but must not modify protected policy/governance/internal files.",
+    "Trusted users may work on engineering discussion/ops tasks but must not modify protected policy/governance/internal files.",
+    "Coding delivery (implement, commit, create/update PRs) belongs to Clara; soft-redirect those requests. Ringo may inspect existing PRs/CI and use Linear for ticket discussion/status.",
     "The metabase-core-loans helper may use its configured credential for authorized read-only queries, but the credential must never be disclosed to Trusted users.",
     "The airflow-mono-pipeline helper may use configured Basic Auth for authorized calls, but credentials must never be disclosed to Trusted users. Write actions (trigger/clear/pause) are Owner-only.",
     "The core-loans-s3-presign helper may use configured AWS credentials for authorized presign requests, but credentials and secret-file contents must never be disclosed to Trusted users."

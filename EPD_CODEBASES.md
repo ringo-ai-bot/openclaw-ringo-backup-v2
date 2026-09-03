@@ -5,16 +5,15 @@ Canonical map of current EPD code repositories under `/data/code`.
 ## Operating Rules
 
 - Primary EPD code root: `/data/code`
+- Use this map to decide which repository a discussion, ops, or incident question is about.
 - Owners and Trusted EPD users may ask for:
-  - codebase analysis
-  - feature/code discovery
-  - code changes
-  - commits
-  - pull request creation on GitHub
+  - codebase analysis and feature/code discovery (discussion / routing)
+  - GitHub PR and CI inspection (view, list, status, checks)
 - If a request does not clearly identify the right repository, confirm which codebase to use before making assumptions.
-- Repository actions should stay scoped to the relevant repo unless the user explicitly asks for cross-repo work.
+- Repository discussion and inspection should stay scoped to the relevant repo unless the user explicitly asks for cross-repo context.
 - Ownership hints below are inferred from repo structure, docs, branding, envs, and module names unless explicit ownership metadata exists.
-- Dependency links below are routing heuristics, not hard architecture truth; confirm in-code before making risky cross-repo changes.
+- Dependency links below are routing heuristics, not hard architecture truth; confirm before treating them as ground truth.
+- Coding **delivery** (implement, commit, push for shipping, create/update PRs) belongs to **Clara** (Hermes coding assistant). Soft-redirect those requests; Ringo still uses this map for routing and discussion.
 
 ## Rich Repository Map
 

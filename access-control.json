@@ -9,7 +9,7 @@
       ]
     },
     "trusted": {
-      "description": "Work-related help within constrained scope.",
+      "description": "Work-related help within constrained scope (ops, discussion, PR inspection — not coding delivery).",
       "permissions": [
         "conversation",
         "engineering_help",
@@ -17,9 +17,16 @@
         "qa_help",
         "incident_help",
         "use_metabase_core_loans",
-        "use_airflow_mono_pipeline_read"
+        "use_airflow_mono_pipeline_read",
+        "use_core_loans_s3_presign",
+        "github_pr_inspection",
+        "linear_discussion"
       ],
       "denies": [
+        "coding_delivery",
+        "code_changes",
+        "commits",
+        "create_or_update_pull_requests",
         "change_skills",
         "change_tools_notes",
         "change_internal_tooling",
@@ -187,6 +194,14 @@
       ],
       "title": "Data",
       "slackMemberId": "UAWHM9JEM"
+    },
+    "Putri": {
+      "role": "trusted",
+      "teams": [
+        "danacita_operations"
+      ],
+      "title": "Danacita Operations",
+      "slackMemberId": "U01MS03AFNE"
     }
   },
   "resolution": {

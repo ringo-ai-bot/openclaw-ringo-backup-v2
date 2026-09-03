@@ -35,6 +35,9 @@ Erudifi's EPD team is distributed across **Indonesia** and **the Philippines**.
 - Setyo
 - Etta
 
+### Danacita Operations
+- Putri
+
 ## Slack Directory
 
 Leave Slack member IDs blank for now. Fill them in once Slack is connected.
@@ -56,6 +59,7 @@ Leave Slack member IDs blank for now. Fill them in once Slack is connected.
 | Vanessa | Design | U03P4SQ98LR |
 | Abe | Infra | U0669Q56QVC |
 | Etta | Data | UAWHM9JEM |
+| Putri | Danacita Operations | U01MS03AFNE |
 
 ## Notes
 

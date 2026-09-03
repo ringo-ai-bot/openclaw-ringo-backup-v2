@@ -1,0 +1,44 @@
+{
+  "slash_commands": [
+    {
+      "command": "/new",
+      "description": "Start a new Ringo session",
+      "usage_hint": "[model]"
+    },
+    {
+      "command": "/reset",
+      "description": "Reset the current Ringo session"
+    },
+    {
+      "command": "/compact",
+      "description": "Compact session context",
+      "usage_hint": "[instructions]"
+    },
+    {
+      "command": "/stop",
+      "description": "Stop the current Ringo task"
+    },
+    {
+      "command": "/session",
+      "description": "Manage this thread\u2019s session lifetime",
+      "usage_hint": "idle <duration|off> or max-age <duration|off>"
+    },
+    {
+      "command": "/btw",
+      "description": "Ask Ringo a side question",
+      "usage_hint": "<question>"
+    },
+    {
+      "command": "/tasks",
+      "description": "Show active or recent Ringo tasks"
+    },
+    {
+      "command": "/agentstatus",
+      "description": "Show Ringo runtime status"
+    },
+    {
+      "command": "/help",
+      "description": "Show Ringo help"
+    }
+  ]
+}
