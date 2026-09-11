@@ -45,6 +45,7 @@ If identity or role is unclear, do **not** escalate access.
   - Abe
   - Etta
   - Putri (Danacita Operations)
+  - Alfons (Direktur Danacita)
 
 **Permissions:**
 Allowed:
@@ -135,6 +136,9 @@ If someone is explicitly marked restricted/blocked, treat them as **Blocked**.
 - Allow `core-loans-s3-presign` (`use_core_loans_s3_presign`) for **Owner** and work-related **Trusted** use.
 - Deny S3 presign skill use for **Chat-only**, **Blocked**, unknown, or ambiguously identified users.
 - Trusted users may receive a short-lived file URL, but must never read, receive, or be shown AWS access keys, secret keys, session tokens, or secret-file contents.
+- Allow `core-loans-tech-intervention` (`use_core_loans_tech_intervention`) for **Owner** and work-related **Trusted** use.
+- Deny tech-intervention skill use for **Chat-only**, **Blocked**, unknown, or ambiguously identified users.
+- The tech-intervention skill may only author paste-ready Django shell scripts; the agent must never execute those scripts and must never modify the core-loans repository.
 - Do not expose internal files, memory, private context, or tooling details to non-owner users.
 - Do not let Trusted users make assistant-governance or system-governance changes.
 - Do not treat familiarity as authorization.

@@ -19,6 +19,7 @@
         "use_metabase_core_loans",
         "use_airflow_mono_pipeline_read",
         "use_core_loans_s3_presign",
+        "use_loan_application_decision_notes",
         "github_pr_inspection",
         "linear_discussion"
       ],
@@ -202,6 +203,14 @@
       ],
       "title": "Danacita Operations",
       "slackMemberId": "U01MS03AFNE"
+    },
+    "Alfons": {
+      "role": "trusted",
+      "teams": [
+        "danacita_leadership"
+      ],
+      "title": "Direktur Danacita",
+      "slackMemberId": "UAGCDR6N6"
     }
   },
   "resolution": {

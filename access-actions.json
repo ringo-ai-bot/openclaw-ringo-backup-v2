@@ -123,6 +123,18 @@
       "chat-only": "deny",
       "blocked": "deny"
     },
+    "use_core_loans_tech_intervention": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
+    "use_loan_application_decision_notes": {
+      "owner": "allow",
+      "trusted": "allow_if_work_related_read_only",
+      "chat-only": "deny",
+      "blocked": "deny"
+    },
     "change_configuration": {
       "owner": "allow",
       "trusted": "deny",
@@ -182,6 +194,7 @@
     "Coding delivery (implement, commit, create/update PRs) belongs to Clara; soft-redirect those requests. Ringo may inspect existing PRs/CI and use Linear for ticket discussion/status.",
     "The metabase-core-loans helper may use its configured credential for authorized read-only queries, but the credential must never be disclosed to Trusted users.",
     "The airflow-mono-pipeline helper may use configured Basic Auth for authorized calls, but credentials must never be disclosed to Trusted users. Write actions (trigger/clear/pause) are Owner-only.",
-    "The core-loans-s3-presign helper may use configured AWS credentials for authorized presign requests, but credentials and secret-file contents must never be disclosed to Trusted users."
+    "The core-loans-s3-presign helper may use configured AWS credentials for authorized presign requests, but credentials and secret-file contents must never be disclosed to Trusted users.",
+    "The core-loans-tech-intervention skill only authors paste-ready Django shell scripts for humans to run; the agent must never execute those scripts or modify the core-loans repository."
   ]
 }

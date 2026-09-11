@@ -35,6 +35,9 @@ Erudifi's EPD team is distributed across **Indonesia** and **the Philippines**.
 - Setyo
 - Etta
 
+### Danacita Leadership
+- Alfons (Direktur Danacita)
+
 ### Danacita Operations
 - Putri
 
@@ -60,6 +63,7 @@ Leave Slack member IDs blank for now. Fill them in once Slack is connected.
 | Abe | Infra | U0669Q56QVC |
 | Etta | Data | UAWHM9JEM |
 | Putri | Danacita Operations | U01MS03AFNE |
+| Alfons | Danacita Leadership | UAGCDR6N6 |
 
 ## Notes
 

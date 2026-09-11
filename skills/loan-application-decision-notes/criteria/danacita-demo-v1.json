@@ -1,0 +1,232 @@
+{
+  "version": 16,
+  "id": "danacita-demo-v1",
+  "name": "Danacita Demo Credit Review",
+  "locale": "id",
+  "enabled": true,
+  "decision_policy": {
+    "reject_if_any_hard_fail": true,
+    "stop_on_hard_fail": true,
+    "max_soft_fails_for_approve": 1,
+    "otherwise_suggestion": "request_more_info"
+  },
+  "criteria": [
+    {
+      "id": "borrower_not_blacklisted_or_watchlisted",
+      "sort_order": 1,
+      "prompt": "Borrower tidak blacklisted dan tidak watchlisted",
+      "category": "identity_risk",
+      "severity": "hard",
+      "polarity": "prefer_false",
+      "threshold": null,
+      "evidence_hints": [
+        "borrower_is_blacklisted",
+        "borrower_is_watchlisted",
+        "datetime_profile_check",
+        "profile_id",
+        "profile_tags",
+        "APPUPT",
+        "PPATK"
+      ],
+      "notes": "Samakan dengan Django admin ID loanapplication changeview → User and Profile Details (bukan re-match live ke blacklist/watchlist tables). Logic core-loans: borrower_is_blacklisted = profile.is_blacklisted() = taggit tag exact name 'APPUPT' in profile.tags; borrower_is_watchlisted = profile.is_in_watchlist() = tag exact name 'PPATK' (lihat users/models/impls/id.py BaseIdProfileChecker.is_blacklisted; checkers di users/models/id_profile.py; admin di loans/admin/views/id_loan_application_child_admin.py). Query Metabase: loans_loanapplication.borrower_id → users_profile.user_id → EXISTS taggit_taggeditem+taggit_tag.name IN ('APPUPT','PPATK') pada object_id=profile.id (lihat field-hints). Tag method seperti APPUPT:FM / PPATK:FN+DOB TIDAK menggantikan base tag untuk flag admin. datetime_profile_check = users_profile.datetime_profile_check (konteks last check). Jika SALAH SATU true/Yes → fail (hard reject). Keduanya false/No → pass. Flag tidak bisa di-resolve → insufficient_data."
+    },
+    {
+      "id": "min_income_gte_3m",
+      "sort_order": 2,
+      "prompt": "Penghasilan minimal ≥ Rp 3.000.000 (borrower income jika self guaranteed; selain itu guarantor income)",
+      "category": "affordability",
+      "severity": "hard",
+      "polarity": "threshold",
+      "threshold": {
+        "metric": "relevant_monthly_income",
+        "op": "gte",
+        "value": 3000000,
+        "unit": "currency"
+      },
+      "evidence_hints": [
+        "guarantor_type",
+        "borrower_monthly_income",
+        "guarantor_monthly_income",
+        "relevant_monthly_income"
+      ],
+      "notes": "Jika loan app self guaranteed → pakai borrower monthly income. Selain itu → pakai guarantor monthly income. Bandingkan dengan 3000000 IDR. Income null/missing → insufficient_data."
+    },
+    {
+      "id": "underwriting_rating_r1_r7",
+      "sort_order": 3,
+      "prompt": "Underwriting rating antara R1–R7",
+      "category": "underwriting",
+      "severity": "hard",
+      "polarity": "prefer_true",
+      "threshold": null,
+      "evidence_hints": [
+        "underwriting_rating",
+        "underwriting_rating_with_status",
+        "underwriting_verified",
+        "underwriting_decision",
+        "underwriting_version",
+        "underwriting_datetime_computed"
+      ],
+      "notes": "Samakan dengan Django admin ID loanapplication changeview → Loan Information Notes → Underwriting Rating (IdUnderwritingLoanAppFieldset; display via LoanApplicationChildAdmin.underwriting_rating_with_status → get_underwriting_display()['rating'] dari loans/mixins/loan_underwriting.py). Nilai tersimpan: loans_loanapplication.underwriting_rating (biasanya R1–R10). Allow: R1,R2,R3,R4,R5,R6,R7 → pass. Hard fail/reject: R8,R9,R10. Normalisasi: jika admin menampilkan prefix A/M (prefs underwriter_display), treat A8/M8 sama seperti R8 (bandingkan angka rating 1–10). Rating null/kosong/'-' → insufficient_data. Jangan invent rating dari decision text saja."
+    },
+    {
+      "id": "restricted_occupation_hard_reject",
+      "sort_order": 4,
+      "prompt": "Pekerjaan pihak relevan bukan TNI/POLRI/pengacara/jurnalis/collection agency/keamanan",
+      "category": "identity_risk",
+      "severity": "hard",
+      "polarity": "prefer_false",
+      "threshold": null,
+      "evidence_hints": [
+        "guarantor_type",
+        "is_self_guaranteed",
+        "borrower_employment_status",
+        "borrower_employment_status_text",
+        "borrower_industry",
+        "borrower_position",
+        "guarantor_employment_status",
+        "guarantor_employment_status_text",
+        "guarantor_industry",
+        "guarantor_position",
+        "employment_status_name",
+        "employment_industry_name"
+      ],
+      "notes": "Pihak: guarantor_type == 'Self Guaranteed' → borrower; selain itu → guarantor (sama seperti income/DBR). Baca employment_status, industry, position dari loan application (admin: Borrower Income Information / guarantor income fields). Field core-loans: borrower_employment_status / guarantor_employment_status (FK users.EmploymentStatus), borrower_industry / guarantor_industry (FK users.EmploymentIndustry), borrower_position / guarantor_position (free text); lihat loans/mixins/loan_profile_info.py + loans/mixins/loan_guarantor.py + loans/models/loan_application.py. Hard fail jika SALAH SATU field pihak relevan match kategori terlarang (fuzzy/case-insensitive): (1) TNI/militer — status 'Militer', teks TNI/tentara/militer, industry 'Pemerintah/Pertahanan'; (2) POLRI/polisi — status 'Polisi', teks POLRI/polisi, industry 'Keamanan/Penegakan Hukum' bila konteks polisi; (3) lawyer — status 'Pengacara / Notaris', industry 'Legal/Hukum', teks pengacara/advokat/notaris/lawyer; (4) journalist — industry 'Hiburan/Media/Jurnalisme', teks jurnalis/wartawan/journalist; (5) collection agency — teks collection/debt collector/penagihan/agency penagihan pada position/status/industry; (6) security — status 'Pengamanan', industry 'Keamanan/Penegakan Hukum', teks satpam/security/keamanan/pengamanan. Kutip field+nilai yang memicu. Semua status+industry+position pihak relevan kosong → insufficient_data. Tidak ada match → pass."
+    },
+    {
+      "id": "fdc_credit_history",
+      "sort_order": 5,
+      "prompt": "Memiliki riwayat kredit FDC dengan nomor HP yang cocok (escalate CLIK manual jika FDC Not Found)",
+      "category": "credit_history",
+      "severity": "soft",
+      "polarity": "prefer_true",
+      "threshold": null,
+      "evidence_hints": [
+        "fdc",
+        "inquiry_status",
+        "inquiry_kind",
+        "fdc_mobile_number",
+        "fdc_phone_match_count",
+        "fdc_phone_mismatch_count",
+        "guarantor_type",
+        "is_self_guaranteed",
+        "borrower_mobile_number",
+        "guarantor_mobile_number"
+      ],
+      "notes": "Pakai canonical FDC fact query di field-hints (filter inquiries_idinquirydata.loan_application_id + kind dulu; JANGAN andalkan M2M join saja). Log: inquiries_idinquirylog Found/Not Found/Failed. Pihak HP: Self Guaranteed → users_user.username; selain itu → guarantor_mobile_number. FDC HP: IdInquiryData.mobile_number (kind=pihak). Normalisasi +62/62/0. Found + semua HP FDC non-kosong match → pass. Found + ada mismatch → soft fail; evidence WAJIB kutip sumber HP pihak, jumlah baris match vs mismatch, dan HP FDC distinct (mask sebagian). Found + HP FDC semua kosong ATAU HP pihak hilang → insufficient_data. Found tapi query fasilitas gagal/error → JANGAN anggap data hilang; retry canonical SQL lalu escalate + confidence low jika tetap gagal. Not Found → insufficient_data + minta user cek CLIK manual (jangan query CLIK); saran prefer escalate. Failed → insufficient_data (retry FDC). Phone mismatch TIDAK boleh menghalangi fetch/evaluasi DPD & written-off."
+    },
+    {
+      "id": "fdc_active_loan_dpd_zero",
+      "sort_order": 6,
+      "prompt": "Active loan dengan DPD = 0 (berlaku untuk FDC)",
+      "category": "credit_history",
+      "severity": "hard",
+      "polarity": "threshold",
+      "threshold": {
+        "metric": "fdc_active_max_dpd",
+        "op": "eq",
+        "value": 0,
+        "unit": "days"
+      },
+      "evidence_hints": [
+        "fdc",
+        "inquiry_status",
+        "active_loans",
+        "fdc_active_max_dpd",
+        "current_dpd",
+        "status_pinjaman",
+        "highest_max_dpd"
+      ],
+      "notes": "Hanya status_pinjaman = 'Agreement Activated'. Worst current_dpd harus = 0. 0 baris active setelah fetch sukses → not_applicable. Log = Found ⇒ fasilitas diharapkan: jika query gagal/kosong tak terduga, RETRY canonical SQL (field-hints); jangan publish insufficient_data seolah DPD tidak ada — escalate + confidence low. Log = Not Found → not_applicable + minta CLIK manual. Log = Failed → insufficient_data."
+    },
+    {
+      "id": "fdc_closed_loan_max_dpd_lte_30",
+      "sort_order": 7,
+      "prompt": "Closed loan dengan DPD max ≤ 30 hari (berlaku untuk FDC)",
+      "category": "credit_history",
+      "severity": "hard",
+      "polarity": "threshold",
+      "threshold": {
+        "metric": "fdc_closed_max_dpd",
+        "op": "lte",
+        "value": 30,
+        "unit": "days"
+      },
+      "evidence_hints": [
+        "fdc",
+        "inquiry_status",
+        "closed_loans",
+        "fdc_closed_max_dpd",
+        "max_dpd",
+        "status_pinjaman",
+        "highest_max_dpd"
+      ],
+      "notes": "Hanya status_pinjaman = 'Closed' (bukan Written Off). Worst max_dpd ≤ 30. 0 closed setelah fetch sukses → not_applicable. Log = Found ⇒ sama seperti active: query gagal ≠ insufficient_data final; retry lalu escalate. Not Found → not_applicable + CLIK manual. Failed → insufficient_data. Written Off dievaluasi kriteria terpisah."
+    },
+    {
+      "id": "fdc_no_written_off",
+      "sort_order": 8,
+      "prompt": "Tidak ada fasilitas FDC Written Off / Written Off Closed",
+      "category": "credit_history",
+      "severity": "hard",
+      "polarity": "prefer_false",
+      "threshold": null,
+      "evidence_hints": [
+        "fdc",
+        "inquiry_status",
+        "status_pinjaman",
+        "written_off_loans",
+        "fdc_written_off_count",
+        "fdc_written_off_max_dpd",
+        "current_dpd",
+        "max_dpd",
+        "outstanding_amount"
+      ],
+      "notes": "Hard reject jika ada baris IdInquiryData pihak relevan dengan status_pinjaman IN ('Written Off','Written Off Closed') — mapping AFPI W/F/S di inquiries/models.py convert_status_pinjaman. Kutip jumlah WO, worst max_dpd/current_dpd, outstanding. 0 WO setelah fetch sukses → pass. Log = Found tapi query gagal → retry canonical SQL; jangan insufficient_data palsu; escalate jika tetap gagal. Log = Not Found → not_applicable (bukan pass). Log = Failed → insufficient_data. Jangan anggap WO sebagai Closed."
+    },
+    {
+      "id": "dbr_under_50",
+      "sort_order": 9,
+      "prompt": "DBR < 50%",
+      "category": "affordability",
+      "severity": "hard",
+      "polarity": "threshold",
+      "threshold": {
+        "metric": "dbr",
+        "op": "lt",
+        "value": 0.5,
+        "unit": "ratio"
+      },
+      "evidence_hints": [
+        "debt_burden_ratio",
+        "dbr_runtime",
+        "guarantor_type",
+        "is_self_guaranteed",
+        "ktp_id_card_number",
+        "guarantor_ktp_id_card_number",
+        "active_monthly_installments",
+        "application_monthly_installment",
+        "approved_monthly_repayment",
+        "requested_monthly_repayment",
+        "borrower_verified_monthly_income",
+        "borrower_monthly_income",
+        "guarantor_verified_monthly_income",
+        "guarantor_monthly_income",
+        "max_dbr_deviation",
+        "is_within_max_dbr_deviation"
+      ],
+      "notes": "Samakan rumus core-loans IdLoanApplication (bukan kolom DB). Admin: Auto Approve Indicator → Debt burden ratio (id_loan_application_child_admin.debt_burden_ratio). Pihak: guarantor_type == 'Self Guaranteed' → borrower_debt_burden_ratio; selain itu → guarantor_debt_burden_ratio (loans/models/id_loan_application.py). Numerator: Σ loans_loan.approved_monthly_repayment untuk Loan.objects.active() status IN ('Agreement Activated','Written Off','For Pre Termination') di mana KTP pihak match sebagai borrower ATAU guarantor pada loans_idloanapplication, exclude aplikasi ini, lalu + (approved_monthly_repayment OR requested_monthly_repayment) aplikasi ini. Jika KTP pihak kosong → bagian active = 0. Denominator: verified_monthly_income OR monthly_income pihak (core memakai or 1 untuk hindari div/0; untuk Decision Notes jika income hilang dan tidak ada DBR admin → insufficient_data, jangan pakai 1). Jangan pakai profile.total_active_installment / requested_total_monthly_payment. Utamakan nilai DBR admin jika di-paste. Active loans kosong di warehouse → Σ active = 0 (bukan insufficient_data). Ambang pack tetap DBR < 50%; kutip juga max_dbr_deviation / is_within_max_dbr_deviation (Auto Approve: DBR <= max dari DebtBurdenRatioDeviationTier) sebagai konteks."
+    },
+    {
+      "id": "priority_partner",
+      "sort_order": 10,
+      "prompt": "Termasuk dalam partner prioritas (Formal: UBSI, UNINUS, Universitas Presiden, Cakrawala, IDS, LSPR, UNM, Universitas Siber Indonesia / Cyber University; Non Formal: dibimbing, RevoU kecuali product SNPL, Hacktiv8, MIHCA, EF, WSE)",
+      "category": "partner",
+      "severity": "soft",
+      "polarity": "prefer_true",
+      "threshold": null,
+      "evidence_hints": ["partner_name", "partner_type", "loan_product", "product_name"],
+      "notes": "Formal allowlist: UBSI, UNINUS, Universitas Presiden, Cakrawala, IDS, LSPR, UNM, Universitas Siber Indonesia (Cyber University). Non Formal allowlist: dibimbing, RevoU (kecuali product SNPL), Hacktiv8, MIHCA, EF, WSE. Cocokkan nama partner secara fuzzy (singkatan vs nama panjang). RevoU + SNPL = fail kriteria ini."
+    }
+  ]
+}
